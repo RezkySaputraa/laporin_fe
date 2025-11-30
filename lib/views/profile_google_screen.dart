@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProfileGoogleScreen extends StatelessWidget {
   const ProfileGoogleScreen({super.key});
@@ -8,7 +9,14 @@ class ProfileGoogleScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Profile"),
+        title: Text(
+          "Profile",
+          style: GoogleFonts.inter(
+            color: Color(0xFF0F55C7),
+            fontWeight: FontWeight.w600,
+            fontSize: 25,
+          ),
+        ),
         centerTitle: true,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(1),

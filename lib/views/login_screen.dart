@@ -79,6 +79,13 @@ class LoginScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide(color: Color(0xFF0F55C7)),
                           ),
+                          suffixIcon: IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.visibility,
+                              color: Color(0xFF4C4B4B).withValues(alpha: 0.8),
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 5),
@@ -160,6 +167,9 @@ class LoginScreen extends StatelessWidget {
                           Text("Don't have an account?"),
                           TextButton(
                             onPressed: () {},
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.all(0),
+                            ),
                             child: Text(
                               "Sign Up",
                               style: TextStyle(color: Color(0xFF0F55C7)),

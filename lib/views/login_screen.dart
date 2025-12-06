@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:laporin_app/views/laporin_screen%20copy.dart';
 import 'package:laporin_app/views/laporin_screen.dart';
 import 'package:laporin_app/views/profile_google_screen.dart';
 
@@ -240,7 +241,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const LaporinScreen(),
+                                builder: (_) => LaporinScreen(),
                               ),
                             );
                           },

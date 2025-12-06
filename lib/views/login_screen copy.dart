@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:laporin_app/controllers/login_controller.dart';
 import 'package:laporin_app/views/laporin_screen.dart';
 import 'package:laporin_app/views/profile_google_screen.dart';
 
-class LoginScreen extends StatelessWidget {
-  final LoginController loginController = Get.put(LoginController());
-  LoginScreen({super.key});
+class LoginScreen2 extends StatefulWidget {
+  const LoginScreen2({super.key});
+
+  @override
+  State<LoginScreen2> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen2> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  bool _obscureText = true;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +32,7 @@ class LoginScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Form(
-                    key: loginController.formKey,
+                    key: _formKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -48,9 +57,8 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 20),
-
                         TextFormField(
-                          controller: loginController.emailController,
+                          controller: _emailController,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return "Email wajib diisi";
@@ -65,7 +73,7 @@ class LoginScreen extends StatelessWidget {
                             filled: true,
                             fillColor: Color(0xFFF3F3F3),
                             hintText: "Email...",
-                            hintStyle: GoogleFonts.inter(
+                            hintStyle: TextStyle(
                               color: Color(0xFF4C4B4B).withValues(alpha: 0.5),
                               fontSize: 14,
                               fontWeight: FontWeight.normal,
@@ -86,55 +94,55 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        Obx(
-                          () => TextFormField(
-                            controller: loginController.passwordController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Password wajib diisi";
-                              }
-                              return null;
-                            },
-                            textAlign: TextAlign.start,
-                            obscureText: loginController.obscureText.value,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Color(0xFFF3F3F3),
-                              hintText: "Password...",
-                              hintStyle: GoogleFonts.inter(
-                                color: Color(0xFF4C4B4B).withValues(alpha: 0.5),
-                                fontSize: 14,
-                                fontWeight: FontWeight.normal,
-                                decoration: TextDecoration.none,
-                              ),
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: 20,
-                                horizontal: 12,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(
-                                  color: Color(0xFF0F55C7),
-                                ),
-                              ),
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  loginController.obscureText.value =
-                                      !loginController.obscureText.value;
-                                },
-                                icon: loginController.obscureText.value
-                                    ? Icon(Icons.visibility)
-                                    : Icon(
-                                        Icons.visibility_off,
-                                        color: Color(
-                                          0xFF4C4B4B,
-                                        ).withValues(alpha: 0.8),
-                                      ),
-                              ),
+                        TextFormField(
+                          controller: _passwordController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Password wajib diisi";
+                            }
+                            if (value.length < 6) {
+                              return "Password minimal 6 karakter";
+                            }
+                            return null;
+                          },
+                          textAlign: TextAlign.start,
+                          obscureText: _obscureText,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Color(0xFFF3F3F3),
+                            hintText: "Password...",
+                            hintStyle: TextStyle(
+                              color: Color(0xFF4C4B4B).withValues(alpha: 0.5),
+                              fontSize: 14,
+                              fontWeight: FontWeight.normal,
+                              decoration: TextDecoration.none,
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 20,
+                              horizontal: 12,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: Color(0xFF0F55C7)),
+                            ),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _obscureText = !_obscureText;
+                                });
+                              },
+                              icon: _obscureText
+                                  ? Icon(Icons.visibility)
+                                  : Icon(
+                                      Icons.visibility_off,
+                                      color: Color(
+                                        0xFF4C4B4B,
+                                      ).withValues(alpha: 0.8),
+                                    ),
                             ),
                           ),
                         ),
@@ -143,7 +151,7 @@ class LoginScreen extends StatelessWidget {
                           alignment: Alignment.centerRight,
                           child: Text(
                             "Forgot Password?",
-                            style: GoogleFonts.inter(
+                            style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w200,
                               color: Color(0xFF4C4B4B).withValues(alpha: 0.8),
@@ -151,79 +159,76 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        Obx(
-                          () => SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: loginController.isLoading.value
-                                  ? null
-                                  : () async {
-                                      FocusScope.of(context).unfocus();
 
-                                      final isFormValid =
-                                          loginController.formKey.currentState
-                                              ?.validate() ??
-                                          false;
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _isLoading
+                                ? null
+                                : () async {
+                                    FocusScope.of(context).unfocus();
 
-                                      if (!isFormValid) return;
+                                    if (_formKey.currentState!.validate()) {
+                                      setState(() {
+                                        _isLoading = true;
+                                      });
 
-                                      final result = await loginController
-                                          .loginUser();
+                                      // Simulasi proses login
+                                      await Future.delayed(
+                                        Duration(seconds: 2),
+                                      );
 
-                                      if (result == true) {
-                                        loginController.resetForm();
+                                      setState(() {
+                                        _isLoading = false;
+                                      });
 
-                                        Navigator.pushReplacement(
+                                      _emailController.clear();
+                                      _passwordController.clear();
+
+                                      if (mounted) {
+                                        Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (_) => LaporinScreen(),
                                           ),
                                         );
-                                      } else {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          const SnackBar(
-                                            content: Text("Credential salah"),
-                                          ),
-                                        );
                                       }
-                                    },
-                              style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 14,
-                                  horizontal: 32,
-                                ),
-                                backgroundColor: Color(0xFF0F55C7),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                elevation: 3,
+                                    }
+                                  },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 14,
+                                horizontal: 32,
                               ),
-                              child: loginController.isLoading.value
-                                  ? SizedBox(
-                                      width: 24,
-                                      height: 24,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                        strokeWidth: 2,
-                                      ),
-                                    )
-                                  : Text(
-                                      "Sign In",
-                                      style: GoogleFonts.inter(
-                                        fontSize: 16,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                              backgroundColor: Color(0xFF0F55C7),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              elevation: 3,
                             ),
+                            child: _isLoading
+                                ? SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : Text(
+                                    "Sign In",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                           ),
                         ),
                         const SizedBox(height: 20),
                         Text(
                           "Or continue with",
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
+                          style: TextStyle(
                             fontSize: 15,
                             color: Color(0xFF4C4B4B),
                           ),
@@ -243,7 +248,7 @@ class LoginScreen extends StatelessWidget {
                           ),
                           label: Text(
                             "Google",
-                            style: GoogleFonts.inter(
+                            style: TextStyle(
                               fontSize: 16,
                               color: Color(0xFF4C4B4B),
                             ),
@@ -268,9 +273,7 @@ class LoginScreen extends StatelessWidget {
                               ),
                               child: Text(
                                 "Sign Up",
-                                style: GoogleFonts.inter(
-                                  color: Color(0xFF0F55C7),
-                                ),
+                                style: TextStyle(color: Color(0xFF0F55C7)),
                               ),
                             ),
                           ],

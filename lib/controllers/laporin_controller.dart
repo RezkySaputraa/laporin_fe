@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:laporin_app/services/shared_preference/auth_shared_preferences.dart';
 import '/models/laporin_jenis_model.dart';
 import '/models/laporin_model.dart';
 import '/services/laporin_service.dart';
 
 class LaporinController extends GetxController {
   final LaporinService laporinService = LaporinService();
+  final AuthSharedPreferences authPrefs = AuthSharedPreferences();
 
   RxBool isAgree = false.obs;
   RxBool imageError = false.obs;
 
-  var imageUrl = ''.obs;
-  var publicIdImage = ''.obs;
+  RxString imageUrl = ''.obs;
+  RxString publicIdImage = ''.obs;
+  RxInt idUser = 0.obs;
 
   RxBool isLoading = false.obs;
   RxBool isLoadingJenis = true.obs;
@@ -35,6 +38,12 @@ class LaporinController extends GetxController {
   void onInit() {
     super.onInit();
     getAllJenisLaporan();
+    loadUser();
+  }
+
+  void loadUser() async {
+    final id = await authPrefs.getUserId();
+    idUser.value = id!.toInt();
   }
 
   @override
@@ -185,7 +194,7 @@ class LaporinController extends GetxController {
     isSubmitting.value = true;
     try {
       final laporin = LaporinModel(
-        pelapor: 5,
+        pelapor: idUser.value,
         alamat: alamatController.text,
         jenisLaporan: selectedJenis.value!.id,
         waktu: isoTime.value ?? DateTime.now().toUtc().toIso8601String(),

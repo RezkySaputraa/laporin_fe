@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '/controllers/laporin_controller.dart';
 import '/models/laporin_jenis_model.dart';
 import '/views/login_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LaporinScreen extends StatelessWidget {
   final LaporinController controller = Get.put(LaporinController());
@@ -51,7 +52,7 @@ class LaporinScreen extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Alamat Kejadian",
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: Color(0xFF4C4B4B),
@@ -70,7 +71,7 @@ class LaporinScreen extends StatelessWidget {
                       },
                       decoration: InputDecoration(
                         hintText: "Alamat...",
-                        hintStyle: TextStyle(
+                        hintStyle: GoogleFonts.inter(
                           color: Color(0xFF4C4B4B).withValues(alpha: 0.5),
                           fontSize: 14,
                           fontWeight: FontWeight.normal,
@@ -95,7 +96,7 @@ class LaporinScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      style: const TextStyle(
+                      style: GoogleFonts.inter(
                         color: Color(0xFF4C4B4B),
                         fontSize: 14,
                         fontWeight: FontWeight.normal,
@@ -107,7 +108,7 @@ class LaporinScreen extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Jenis Laporan",
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: Color(0xFF4C4B4B),
@@ -126,7 +127,7 @@ class LaporinScreen extends StatelessWidget {
                         },
                         hint: Text(
                           "Pilih Jenis Laporan",
-                          style: TextStyle(
+                          style: GoogleFonts.inter(
                             color: Color(0xFF4C4B4B).withValues(alpha: 0.5),
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
@@ -154,7 +155,7 @@ class LaporinScreen extends StatelessWidget {
                             borderSide: BorderSide(color: Color(0xFF0F55C7)),
                           ),
                         ),
-                        style: const TextStyle(
+                        style: GoogleFonts.inter(
                           color: Color(0xFF4C4B4B),
                           fontSize: 14,
                         ),
@@ -166,7 +167,7 @@ class LaporinScreen extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Tanggal",
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: Color(0xFF4C4B4B),
@@ -185,7 +186,7 @@ class LaporinScreen extends StatelessWidget {
                       },
                       decoration: InputDecoration(
                         hintText: "dd/mm/yyyy",
-                        hintStyle: TextStyle(
+                        hintStyle: GoogleFonts.inter(
                           color: Color(0xFF4C4B4B).withValues(alpha: 0.5),
                           fontSize: 14,
                           fontWeight: FontWeight.normal,
@@ -207,7 +208,7 @@ class LaporinScreen extends StatelessWidget {
                       onTap: () async {
                         await controller.pickDateTime(context);
                       },
-                      style: const TextStyle(
+                      style: GoogleFonts.inter(
                         color: Color(0xFF4C4B4B),
                         fontSize: 14,
                         fontWeight: FontWeight.normal,
@@ -219,7 +220,7 @@ class LaporinScreen extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Keterangan",
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: Color(0xFF4C4B4B),
@@ -240,7 +241,7 @@ class LaporinScreen extends StatelessWidget {
                       textAlign: TextAlign.start,
                       decoration: InputDecoration(
                         hintText: "Tulis Keterangan...",
-                        hintStyle: TextStyle(
+                        hintStyle: GoogleFonts.inter(
                           color: Color(0xFF4C4B4B).withValues(alpha: 0.5),
                           fontSize: 14,
                           fontWeight: FontWeight.normal,
@@ -258,7 +259,7 @@ class LaporinScreen extends StatelessWidget {
                           borderSide: BorderSide(color: Color(0xFF0F55C7)),
                         ),
                       ),
-                      style: const TextStyle(
+                      style: GoogleFonts.inter(
                         color: Color(0xFF4C4B4B),
                         fontSize: 14,
                         fontWeight: FontWeight.normal,
@@ -270,7 +271,7 @@ class LaporinScreen extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Foto",
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: Color(0xFF4C4B4B),
@@ -312,7 +313,7 @@ class LaporinScreen extends StatelessWidget {
                                   const SizedBox(height: 8),
                                   Text(
                                     "Unggah Foto",
-                                    style: TextStyle(
+                                    style: GoogleFonts.inter(
                                       fontSize: 14,
                                       color: Color(0xFF4C4B4B).withAlpha(128),
                                     ),
@@ -378,7 +379,10 @@ class LaporinScreen extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 5),
                         child: Text(
                           'Foto wajib diunggah',
-                          style: TextStyle(color: Colors.red, fontSize: 12),
+                          style: GoogleFonts.inter(
+                            color: Colors.red,
+                            fontSize: 12,
+                          ),
                         ),
                       ),
                     ),
@@ -411,7 +415,7 @@ class LaporinScreen extends StatelessWidget {
                                     child: RichText(
                                       textAlign: TextAlign.justify,
                                       text: TextSpan(
-                                        style: TextStyle(
+                                        style: GoogleFonts.inter(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,
                                           color: Color(0xFF4C4B4B),
@@ -421,14 +425,25 @@ class LaporinScreen extends StatelessWidget {
                                             text:
                                                 "Saya bersedia menerima sanksi sesuai ",
                                           ),
-                                          TextSpan(
-                                            text:
+                                          WidgetSpan(
+                                            child: GestureDetector(
+                                              onTap: () async {
+                                                final Uri url = Uri.parse(
+                                                  'https://www.hukumonline.com/klinik/a/pasal-378-kuhp-tentang-penipuan-lt6571693c4c627/',
+                                                );
+                                                await launchUrl(
+                                                  url,
+                                                ); // tanpa cek hasil
+                                              },
+                                              child: Text(
                                                 "peraturan perundang-undangan",
-                                            style: const TextStyle(
-                                              color: Color(0xFF0F55C7),
+                                                style: GoogleFonts.inter(
+                                                  color: Color(0xFF0F55C7),
+                                                  decoration:
+                                                      TextDecoration.none,
+                                                ),
+                                              ),
                                             ),
-                                            recognizer: TapGestureRecognizer()
-                                              ..onTap = () {},
                                           ),
                                           const TextSpan(
                                             text:
@@ -481,7 +496,7 @@ class LaporinScreen extends StatelessWidget {
                               )
                             : Text(
                                 "LAPORIN !!!",
-                                style: TextStyle(
+                                style: GoogleFonts.inter(
                                   fontSize: 22,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -501,7 +516,7 @@ class LaporinScreen extends StatelessWidget {
 
   void showSuccessDialog(context) {
     showDialog(
-      barrierDismissible: true,
+      barrierDismissible: false,
       context: context,
       builder: (_) {
         return AlertDialog(
@@ -528,9 +543,9 @@ class LaporinScreen extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              const Text(
+              Text(
                 "Berhasil!",
-                style: TextStyle(
+                style: GoogleFonts.inter(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF0F55C7),
@@ -539,10 +554,13 @@ class LaporinScreen extends StatelessWidget {
 
               const SizedBox(height: 8),
 
-              const Text(
+              Text(
                 "Laporan kamu berhasil dikirim dan akan segera diproses.",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Color(0xFF4C4B4B)),
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: Color(0xFF4C4B4B),
+                ),
               ),
 
               const SizedBox(height: 20),
@@ -564,12 +582,12 @@ class LaporinScreen extends StatelessWidget {
 
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (_) => const LoginScreen()),
+                      MaterialPageRoute(builder: (_) => LoginScreen()),
                     );
                   },
-                  child: const Text(
+                  child: Text(
                     "OK",
-                    style: TextStyle(
+                    style: GoogleFonts.inter(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,

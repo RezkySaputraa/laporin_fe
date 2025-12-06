@@ -47,7 +47,7 @@ class ProfileGoogleScreen extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Username",
-                  style: TextStyle(
+                  style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: Color(0xFF4C4B4B),
@@ -60,7 +60,7 @@ class ProfileGoogleScreen extends StatelessWidget {
                 textAlign: TextAlign.start,
                 decoration: InputDecoration(
                   hintText: "Username...",
-                  hintStyle: TextStyle(
+                  hintStyle: GoogleFonts.inter(
                     color: Color(0xFF4C4B4B).withValues(alpha: 0.5),
                     fontSize: 14,
                     fontWeight: FontWeight.normal,
@@ -78,7 +78,7 @@ class ProfileGoogleScreen extends StatelessWidget {
                     borderSide: BorderSide(color: Color(0xFF0F55C7)),
                   ),
                 ),
-                style: const TextStyle(
+                style: GoogleFonts.inter(
                   color: Color(0xFF4C4B4B),
                   fontSize: 14,
                   fontWeight: FontWeight.normal,
@@ -90,7 +90,7 @@ class ProfileGoogleScreen extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "E-mail",
-                  style: TextStyle(
+                  style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: Color(0xFF4C4B4B),
@@ -103,7 +103,7 @@ class ProfileGoogleScreen extends StatelessWidget {
                 textAlign: TextAlign.start,
                 decoration: InputDecoration(
                   hintText: "Email...",
-                  hintStyle: TextStyle(
+                  hintStyle: GoogleFonts.inter(
                     color: Color(0xFF4C4B4B).withValues(alpha: 0.5),
                     fontSize: 14,
                     fontWeight: FontWeight.normal,
@@ -121,7 +121,7 @@ class ProfileGoogleScreen extends StatelessWidget {
                     borderSide: BorderSide(color: Color(0xFF0F55C7)),
                   ),
                 ),
-                style: const TextStyle(
+                style: GoogleFonts.inter(
                   color: Color(0xFF4C4B4B),
                   fontSize: 14,
                   fontWeight: FontWeight.normal,
@@ -149,7 +149,7 @@ class ProfileGoogleScreen extends StatelessWidget {
                       SizedBox(width: 10),
                       Text(
                         "Google",
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           fontSize: 16,
                           color: Colors.white,
                           fontWeight: FontWeight.w700,

@@ -850,7 +850,7 @@ class _LaporinScreenState extends State<Laporin2Screen> {
 
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (_) => const LoginScreen()),
+                      MaterialPageRoute(builder: (_) => LoginScreen()),
                     );
                   },
                   child: const Text(

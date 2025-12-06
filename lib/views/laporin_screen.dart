@@ -3,9 +3,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:laporin_app/controllers/laporin_controller.dart';
-import 'package:laporin_app/models/laporin_jenis_model.dart';
-import 'package:laporin_app/views/login_screen.dart';
+import '/controllers/laporin_controller.dart';
+import '/models/laporin_jenis_model.dart';
+import '/views/login_screen.dart';
 
 class LaporinScreen extends StatelessWidget {
   final LaporinController controller = Get.put(LaporinController());
@@ -334,8 +334,21 @@ class LaporinScreen extends StatelessWidget {
                                     right: 6,
                                     child: InkWell(
                                       onTap: () async {
-                                        await controller.deleteImage();
-                                        controller.isAgree.value = false;
+                                        bool hasil = await controller
+                                            .deleteImage();
+                                        if (hasil == true) {
+                                          controller.isAgree.value = false;
+                                        } else {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Gagal menghapus gambar',
+                                              ),
+                                            ),
+                                          );
+                                        }
                                       },
                                       child: Container(
                                         padding: EdgeInsets.all(4),
@@ -440,7 +453,7 @@ class LaporinScreen extends StatelessWidget {
                                 final success = await controller
                                     .insertLaporin();
 
-                                if (success) {
+                                if (success == true) {
                                   showSuccessDialog(context);
                                 }
                               },

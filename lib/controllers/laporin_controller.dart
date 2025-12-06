@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:laporin_app/models/laporin_jenis_model.dart';
-import 'package:laporin_app/models/laporin_model.dart';
-import 'package:laporin_app/services/laporin_service.dart';
+import '/models/laporin_jenis_model.dart';
+import '/models/laporin_model.dart';
+import '/services/laporin_service.dart';
 
 class LaporinController extends GetxController {
   final LaporinService laporinService = LaporinService();
@@ -87,9 +87,9 @@ class LaporinController extends GetxController {
     );
   }
 
-  Future<void> _uploadImageFromPicked() async {
+  Future<bool> _uploadImageFromPicked() async {
     final XFile? image = pickedImage.value;
-    if (image == null) return;
+    if (image == null) return false;
 
     isLoading.value = true;
     try {
@@ -100,15 +100,16 @@ class LaporinController extends GetxController {
         publicIdImage.value = data['public_id'];
         imageError.value = false;
       }
+      return true;
     } catch (e) {
       pickedImage.value = null;
-      Get.snackbar('Error', 'Upload foto gagal');
+      return false;
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> deleteImage() async {
+  Future<bool> deleteImage() async {
     final String pubId = publicIdImage.value;
 
     isLoading.value = true;
@@ -120,8 +121,9 @@ class LaporinController extends GetxController {
         publicIdImage.value = '';
         pickedImage.value = null;
       }
+      return true;
     } catch (e) {
-      Get.snackbar('Error', 'Gagal menghapus foto');
+      return false;
     } finally {
       isLoading.value = false;
     }
@@ -158,7 +160,7 @@ class LaporinController extends GetxController {
         "${time.minute.toString().padLeft(2, '0')}";
   }
 
-  Future<void> getAllJenisLaporan() async {
+  Future<bool> getAllJenisLaporan() async {
     try {
       isLoadingJenis.value = true;
       final data = await laporinService.getJenisLaporan();
@@ -166,8 +168,9 @@ class LaporinController extends GetxController {
           .map((json) => LaporinJenisModel.fromJson(json))
           .toList();
       jenisList.value = list;
+      return true;
     } catch (e) {
-      Get.snackbar('Error', 'Gagal mendapatkan jenis laporan');
+      return false;
     } finally {
       isLoadingJenis.value = false;
     }
@@ -202,7 +205,6 @@ class LaporinController extends GetxController {
   }
 
   void resetForm() {
-    // Reset text controllers
     alamatController.text = '';
     keteranganController.text = '';
     tanggalController.text = '';

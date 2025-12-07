@@ -10,14 +10,4 @@ class SupabaseService {
       accessToken: accessToken,
     );
   }
-
-  // Future<PostgrestResponse> upsertUser({
-  //   required String username,
-  //   required String email,
-  // }) {
-  //   return supabaseConnect.from('users').upsert({
-  //     'username': username,
-  //     'email': email,
-  //   });
-  // }
 }

@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:laporin_app/controllers/login_controller.dart';
-import 'package:laporin_app/views/laporin_screen.dart';
 import 'package:laporin_app/views/profile_google_screen.dart';
 
 class LoginScreen extends StatelessWidget {

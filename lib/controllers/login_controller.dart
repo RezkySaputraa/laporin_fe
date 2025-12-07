@@ -73,6 +73,7 @@ class LoginController extends GetxController {
           await authPrefs.saveUser(
             id: userData['id'],
             username: userData['username'],
+            login: "google",
           );
 
           return true;
@@ -95,7 +96,11 @@ class LoginController extends GetxController {
       );
       final result = await loginService.login(loginData);
 
-      await authPrefs.saveUser(id: result['id'], username: result['username']);
+      await authPrefs.saveUser(
+        id: result['id'],
+        username: result['username'],
+        login: "password",
+      );
 
       return true;
     } catch (e) {

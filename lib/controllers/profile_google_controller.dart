@@ -1,34 +1,63 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:laporin_app/models/login_google_model.dart';
-import 'package:laporin_app/models/login_model.dart';
-import 'package:laporin_app/services/login_service.dart';
+import 'package:laporin_app/services/profile_service.dart';
 import 'package:laporin_app/services/shared_preference/auth_shared_preferences.dart';
-import 'package:laporin_app/services/supabase/supabase_service.dart';
 
 class ProfileGoogleController extends GetxController {
-  final LoginService loginService = LoginService();
+  final ProfileService profileService = ProfileService();
+  final AuthSharedPreferences authPrefs = AuthSharedPreferences();
 
-  RxBool obscureText = true.obs;
   RxBool isFetchingUser = false.obs;
+  RxInt idUser = 0.obs;
+  RxString loginProfile = "".obs;
+
+  RxString username = "".obs;
+  RxString email = "".obs;
+
+  late TextEditingController usernameController;
+  late TextEditingController emailController;
+
+  @override
+  void onInit() {
+    super.onInit();
+    usernameController = TextEditingController();
+    emailController = TextEditingController();
+    loadUser();
+  }
+
+  @override
+  void onClose() {
+    usernameController.dispose();
+    emailController.dispose();
+    super.onClose();
+  }
+
+  void loadUser() async {
+    final id = await authPrefs.getUserId();
+    idUser.value = id!.toInt();
+
+    // ini kode sementara untuk menunjukkan perbedaan login dengan google dan ga google
+    final loginWith = await authPrefs.getLogin();
+    loginProfile.value = loginWith!;
+    // nanti apabila ada perubahan bisa dihapus
+
+    await getUserProfile();
+  }
 
   Future<bool> getUserProfile() async {
     try {
       isFetchingUser.value = true;
-      final data = await laporinService.getJenisLaporan();
-      final list = (data)
-          .map((json) => LaporinJenisModel.fromJson(json))
-          .toList();
-      jenisList.value = list;
+      final data = await profileService.getProfile(idUser.value);
+      username.value = data['username'];
+      email.value = data['email'];
+
+      usernameController.text = username.value;
+      emailController.text = email.value;
       return true;
     } catch (e) {
       return false;
     } finally {
-      isLoadingJenis.value = false;
+      isFetchingUser.value = false;
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:laporin_app/models/login_google_model.dart';
 import 'package:laporin_app/models/login_model.dart';
 
 class LoginService {
@@ -23,13 +24,21 @@ class LoginService {
     }
   }
 
-  Future<void> logout(String publicId) async {
-    final response = await dio.delete(
-      "$baseUrl/media/delete",
-      data: {'public_id': publicId},
-      options: Options(headers: {"Content-Type": "application/json"}),
-    );
+  Future<List<dynamic>> loginFromGoogle(LoginGoogleModel data) async {
+    try {
+      final response = await dio.post(
+        "$baseUrl/auth/login/google",
+        data: data.toJson(),
+        options: Options(headers: {"Content-Type": "application/json"}),
+      );
 
-    return response.data;
+      return response.data;
+    } on DioException catch (e) {
+      if (e.response != null) {
+        throw Exception(e.response?.data['error'] ?? "Login gagal");
+      } else {
+        throw Exception("Server tidak bisa dijangkau");
+      }
+    }
   }
 }

@@ -148,7 +148,7 @@ class ProfileGoogleScreen extends StatelessWidget {
                       SvgPicture.asset("assets/images/login_screen/google.svg"),
                       SizedBox(width: 10),
                       Text(
-                        "Google",
+                        "Service by Google",
                         style: GoogleFonts.inter(
                           fontSize: 16,
                           color: Colors.white,

@@ -1,14 +1,61 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:laporin_app/controllers/login_controller.dart';
+import 'package:laporin_app/services/supabase/supabase_service.dart';
 import 'package:laporin_app/views/laporin_screen.dart';
 import 'package:laporin_app/views/profile_google_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatelessWidget {
   final LoginController loginController = Get.put(LoginController());
   LoginScreen({super.key});
+
+  // continueWithGoogle(context) async {
+  //   try {
+  //     GoogleSignIn signIn = GoogleSignIn.instance;
+  //     await signIn.initialize(
+  //       serverClientId: dotenv.env['WEB_CLIENT'],
+  //       clientId: Platform.isAndroid
+  //           ? dotenv.env['ANDROID_CLIENT']
+  //           : dotenv.env['IOS_CLIENT'],
+  //     );
+
+  //     GoogleSignInAccount account = await signIn.authenticate();
+  //     String idToken = account.authentication.idToken ?? '';
+  //     final authorization =
+  //         await account.authorizationClient.authorizationForScopes([
+  //           'email',
+  //           'profile',
+  //         ]) ??
+  //         await account.authorizationClient.authorizeScopes([
+  //           'email',
+  //           'profile',
+  //         ]);
+
+  //     final result = await SupabaseService.supabaseConnect.auth
+  //         .signInWithIdToken(
+  //           provider: OAuthProvider.google,
+  //           idToken: idToken,
+  //           accessToken: authorization.accessToken,
+  //         );
+
+  //     if (result.user != null && result.session != null) {
+  //       Navigator.pushAndRemoveUntil(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => const ProfileGoogleScreen()),
+  //         (context) => false,
+  //       );
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -173,11 +220,12 @@ class LoginScreen extends StatelessWidget {
                                       if (result == true) {
                                         loginController.resetForm();
 
-                                        Navigator.pushReplacement(
+                                        Navigator.pushAndRemoveUntil(
                                           context,
                                           MaterialPageRoute(
                                             builder: (_) => LaporinScreen(),
                                           ),
+                                          (route) => false,
                                         );
                                       } else {
                                         ScaffoldMessenger.of(
@@ -230,13 +278,22 @@ class LoginScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => ProfileGoogleScreen(),
-                              ),
-                            );
+                          onPressed: () async {
+                            final bool result = await loginController
+                                .continueWithGoogle(context);
+                            if (result == true) {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => LaporinScreen(),
+                                ),
+                                (route) => false,
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("Login Gagal")),
+                              );
+                            }
                           },
                           icon: SvgPicture.asset(
                             "assets/images/login_screen/google.svg",
@@ -262,7 +319,15 @@ class LoginScreen extends StatelessWidget {
                           children: [
                             Text("Don't have an account?"),
                             TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => ProfileGoogleScreen(),
+                                  ),
+                                  (route) => false,
+                                );
+                              },
                               style: TextButton.styleFrom(
                                 padding: EdgeInsets.all(0),
                               ),

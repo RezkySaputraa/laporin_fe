@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:laporin_app/controllers/profile_google_controller.dart';
+import 'package:laporin_app/views/laporin_screen.dart';
 
 class ProfileGoogleScreen extends StatelessWidget {
-  const ProfileGoogleScreen({super.key});
+  final ProfileGoogleController googleController = Get.put(
+    ProfileGoogleController(),
+  );
+  ProfileGoogleScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,142 +33,169 @@ class ProfileGoogleScreen extends StatelessWidget {
           child: Container(height: 1, color: Colors.grey),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 20),
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: AssetImage(
-                    "assets/images/profile_screen/demo-image.png",
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Username",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF4C4B4B),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 5),
-              TextField(
-                readOnly: true,
-                textAlign: TextAlign.start,
-                decoration: InputDecoration(
-                  hintText: "Username...",
-                  hintStyle: TextStyle(
-                    color: Color(0xFF4C4B4B).withValues(alpha: 0.5),
-                    fontSize: 14,
-                    fontWeight: FontWeight.normal,
-                    decoration: TextDecoration.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 17,
-                    horizontal: 12,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Color(0xFF0F55C7)),
-                  ),
-                ),
-                style: const TextStyle(
-                  color: Color(0xFF4C4B4B),
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
-                  decoration: TextDecoration.none,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "E-mail",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF4C4B4B),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 5),
-              TextField(
-                readOnly: true,
-                textAlign: TextAlign.start,
-                decoration: InputDecoration(
-                  hintText: "Email...",
-                  hintStyle: TextStyle(
-                    color: Color(0xFF4C4B4B).withValues(alpha: 0.5),
-                    fontSize: 14,
-                    fontWeight: FontWeight.normal,
-                    decoration: TextDecoration.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 17,
-                    horizontal: 12,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: Color(0xFF0F55C7)),
-                  ),
-                ),
-                style: const TextStyle(
-                  color: Color(0xFF4C4B4B),
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
-                  decoration: TextDecoration.none,
-                ),
-              ),
-              SizedBox(height: 20),
-              Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-                    backgroundColor: Color(0xFF0F55C7),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    elevation: 3,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SvgPicture.asset("assets/images/login_screen/google.svg"),
-                      SizedBox(width: 10),
-                      Text(
-                        "Google",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                        ),
+      body: Obx(() {
+        if (googleController.isFetchingUser.value) {
+          return const Center(child: CircularProgressIndicator());
+        } else {
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20, bottom: 20),
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage(
+                        "assets/images/profile_screen/demo-image.png",
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Username",
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF4C4B4B),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  TextField(
+                    readOnly: true,
+                    textAlign: TextAlign.start,
+                    controller: googleController.usernameController,
+                    decoration: InputDecoration(
+                      hintText: "Username...",
+                      hintStyle: GoogleFonts.inter(
+                        color: Color(0xFF4C4B4B).withValues(alpha: 0.5),
+                        fontSize: 14,
+                        fontWeight: FontWeight.normal,
+                        decoration: TextDecoration.none,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 17,
+                        horizontal: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Color(0xFF0F55C7)),
+                      ),
+                    ),
+                    style: GoogleFonts.inter(
+                      color: Color(0xFF4C4B4B),
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                      decoration: TextDecoration.none,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "E-mail",
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF4C4B4B),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  TextField(
+                    readOnly: true,
+                    textAlign: TextAlign.start,
+                    controller: googleController.emailController,
+                    decoration: InputDecoration(
+                      hintText: "Email...",
+                      hintStyle: GoogleFonts.inter(
+                        color: Color(0xFF4C4B4B).withValues(alpha: 0.5),
+                        fontSize: 14,
+                        fontWeight: FontWeight.normal,
+                        decoration: TextDecoration.none,
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 17,
+                        horizontal: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: Color(0xFF0F55C7)),
+                      ),
+                    ),
+                    style: GoogleFonts.inter(
+                      color: Color(0xFF4C4B4B),
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                      decoration: TextDecoration.none,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => LaporinScreen()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 14,
+                          horizontal: 20,
+                        ),
+                        backgroundColor: Color(0xFF0F55C7),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        elevation: 3,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SvgPicture.asset(
+                            "assets/images/login_screen/google.svg",
+                          ),
+                          SizedBox(width: 10),
+                          googleController.loginProfile.value == "google"
+                              ? Text(
+                                  "Service by Google",
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                )
+                              : Text(
+                                  "Login With Credential",
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
+          );
+        }
+      }),
     );
   }
 }

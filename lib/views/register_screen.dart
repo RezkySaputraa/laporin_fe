@@ -4,9 +4,41 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:laporin_app/controllers/register_controller.dart';
 import 'package:laporin_app/views/login_screen.dart';
 
-class RegisterScreen extends StatelessWidget {
-  final RegisterController registerController = Get.put(RegisterController());
-  RegisterScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _formKey = GlobalKey<FormState>();
+  late RegisterController registerController;
+
+  @override
+  void initState() {
+    super.initState();
+    // Use Get.put or find existing
+    registerController = Get.isRegistered<RegisterController>()
+        ? Get.find<RegisterController>()
+        : Get.put(RegisterController());
+    // Reset form state when entering screen
+    registerController.resetForm();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void _navigateToLogin() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const LoginScreen(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +53,7 @@ class RegisterScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Form(
-                    key: registerController.formKey,
+                    key: _formKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -191,8 +223,8 @@ class RegisterScreen extends StatelessWidget {
                                   : () async {
                                       FocusScope.of(context).unfocus();
 
-                                      final isFormValid = registerController
-                                              .formKey.currentState
+                                      final isFormValid = _formKey
+                                              .currentState
                                               ?.validate() ??
                                           false;
 
@@ -204,32 +236,38 @@ class RegisterScreen extends StatelessWidget {
                                       if (result == true) {
                                         registerController.resetForm();
 
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          const SnackBar(
-                                            content: Text(
-                                              "Registrasi berhasil! Silakan login.",
+                                        if (mounted) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                "Registrasi berhasil! Silakan login.",
+                                              ),
+                                              backgroundColor: Colors.green,
                                             ),
-                                            backgroundColor: Colors.green,
-                                          ),
-                                        );
+                                          );
 
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) => LoginScreen(),
-                                          ),
-                                        );
+                                          _navigateToLogin();
+                                        }
                                       } else {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          const SnackBar(
-                                            content: Text("Registrasi Gagal"),
-                                            backgroundColor: Colors.red,
-                                          ),
-                                        );
+                                        if (mounted) {
+                                          final errorMsg = registerController
+                                              .errorMessage.value;
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                errorMsg.isNotEmpty
+                                                    ? errorMsg
+                                                    : "Registrasi Gagal",
+                                              ),
+                                              backgroundColor: Colors.red,
+                                              duration: Duration(seconds: 5),
+                                            ),
+                                          );
+                                        }
                                       }
                                     },
                               style: ElevatedButton.styleFrom(
@@ -270,14 +308,7 @@ class RegisterScreen extends StatelessWidget {
                           children: [
                             Text("Already have an account?"),
                             TextButton(
-                              onPressed: () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => LoginScreen(),
-                                  ),
-                                );
-                              },
+                              onPressed: _navigateToLogin,
                               style: TextButton.styleFrom(
                                 padding: EdgeInsets.all(0),
                               ),

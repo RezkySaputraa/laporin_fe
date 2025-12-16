@@ -16,7 +16,6 @@ class LoginController extends GetxController {
 
   final AuthSharedPreferences authPrefs = AuthSharedPreferences();
 
-  final formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 

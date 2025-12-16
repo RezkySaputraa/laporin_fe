@@ -6,13 +6,13 @@ import 'package:laporin_app/services/register_service.dart';
 class RegisterController extends GetxController {
   final RegisterService registerService = RegisterService();
 
-  final formKey = GlobalKey<FormState>();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   RxBool obscureText = true.obs;
   RxBool isLoading = false.obs;
+  RxString errorMessage = ''.obs;
 
   @override
   void onClose() {
@@ -25,15 +25,27 @@ class RegisterController extends GetxController {
   Future<bool> registerUser() async {
     try {
       isLoading.value = true;
+      errorMessage.value = '';
+      
       final registerData = RegisterModel(
-        username: usernameController.text,
-        email: emailController.text,
+        username: usernameController.text.trim(),
+        email: emailController.text.trim(),
         password: passwordController.text,
       );
-      await registerService.register(registerData);
-
+      
+      debugPrint('=== REGISTER DEBUG ===');
+      debugPrint('Username: ${registerData.username}');
+      debugPrint('Email: ${registerData.email}');
+      debugPrint('Password length: ${registerData.password.length}');
+      debugPrint('Request data: ${registerData.toJson()}');
+      
+      final result = await registerService.register(registerData);
+      
+      debugPrint('Register success: $result');
       return true;
     } catch (e) {
+      debugPrint('Register error: $e');
+      errorMessage.value = e.toString().replaceAll('Exception: ', '');
       return false;
     } finally {
       isLoading.value = false;
@@ -47,5 +59,6 @@ class RegisterController extends GetxController {
 
     obscureText.value = true;
     isLoading.value = false;
+    errorMessage.value = '';
   }
 }

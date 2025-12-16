@@ -6,9 +6,41 @@ import 'package:laporin_app/controllers/login_controller.dart';
 import 'package:laporin_app/views/profile_google_screen.dart';
 import 'package:laporin_app/views/register_screen.dart';
 
-class LoginScreen extends StatelessWidget {
-  final LoginController loginController = Get.put(LoginController());
-  LoginScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
+  late LoginController loginController;
+
+  @override
+  void initState() {
+    super.initState();
+    // Use Get.put with permanent: false, or find existing
+    loginController = Get.isRegistered<LoginController>()
+        ? Get.find<LoginController>()
+        : Get.put(LoginController());
+    // Reset form state when entering screen
+    loginController.resetForm();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void _navigateToRegister() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const RegisterScreen(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +55,7 @@ class LoginScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Form(
-                    key: loginController.formKey,
+                    key: _formKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -161,9 +193,9 @@ class LoginScreen extends StatelessWidget {
                                       FocusScope.of(context).unfocus();
 
                                       final isFormValid =
-                                          loginController.formKey.currentState
-                                              ?.validate() ??
-                                          false;
+                                          _formKey.currentState
+                                                  ?.validate() ??
+                                              false;
 
                                       if (!isFormValid) return;
 
@@ -173,22 +205,26 @@ class LoginScreen extends StatelessWidget {
                                       if (result == true) {
                                         loginController.resetForm();
 
-                                        Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) =>
-                                                ProfileGoogleScreen(),
-                                          ),
-                                          (route) => false,
-                                        );
+                                        if (mounted) {
+                                          Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) =>
+                                                  ProfileGoogleScreen(),
+                                            ),
+                                            (route) => false,
+                                          );
+                                        }
                                       } else {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          const SnackBar(
-                                            content: Text("Login Gagal"),
-                                          ),
-                                        );
+                                        if (mounted) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text("Login Gagal"),
+                                            ),
+                                          );
+                                        }
                                       }
                                     },
                               style: ElevatedButton.styleFrom(
@@ -236,17 +272,21 @@ class LoginScreen extends StatelessWidget {
                             final bool result = await loginController
                                 .continueWithGoogle(context);
                             if (result == true) {
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => ProfileGoogleScreen(),
-                                ),
-                                (route) => false,
-                              );
+                              if (mounted) {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => ProfileGoogleScreen(),
+                                  ),
+                                  (route) => false,
+                                );
+                              }
                             } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Login Gagal")),
-                              );
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text("Login Gagal")),
+                                );
+                              }
                             }
                           },
                           icon: SvgPicture.asset(
@@ -273,14 +313,7 @@ class LoginScreen extends StatelessWidget {
                           children: [
                             Text("Don't have an account?"),
                             TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => RegisterScreen(),
-                                  ),
-                                );
-                              },
+                              onPressed: _navigateToRegister,
                               style: TextButton.styleFrom(
                                 padding: EdgeInsets.all(0),
                               ),

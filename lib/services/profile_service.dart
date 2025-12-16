@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
 class ProfileService {
-  final String baseUrl = "http://192.168.1.2:8080";
+  final String baseUrl = "https://laporin-be-724441751884.asia-southeast2.run.app";
   final dio = Dio();
 
   Future<Map<String, dynamic>> getProfile(id) async {

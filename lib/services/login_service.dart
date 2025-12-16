@@ -3,7 +3,7 @@ import 'package:laporin_app/models/login_google_model.dart';
 import 'package:laporin_app/models/login_model.dart';
 
 class LoginService {
-  final String baseUrl = "http://192.168.1.2:8080";
+  final String baseUrl = "https://laporin-be-724441751884.asia-southeast2.run.app";
   final dio = Dio();
 
   Future<Map<String, dynamic>> login(LoginModel data) async {

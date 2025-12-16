@@ -3,7 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:laporin_app/models/laporin_model.dart';
 
 class LaporinService {
-  final String baseUrl = "http://192.168.1.2:8080";
+  final String baseUrl = "https://laporin-be-724441751884.asia-southeast2.run.app";
   final dio = Dio();
 
   Future<void> submitLaporan(LaporinModel data) async {

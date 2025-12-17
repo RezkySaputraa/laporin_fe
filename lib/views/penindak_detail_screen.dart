@@ -283,9 +283,36 @@ class _PenindakDetailScreenState extends State<PenindakDetailScreen> {
                 return const SizedBox.shrink();
               }),
 
-              // Submit Button
-              Obx(
-                () => SizedBox(
+              // Submit Button - only show if status is not 2 (selesai)
+              Obx(() {
+                // Hide button if status is 2 (selesai)
+                if (controller.laporan.value?.status == 2) {
+                  return Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.check_circle, color: Colors.green.shade700),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Laporan ini sudah selesai ditindaklanjuti',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.green.shade700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                return SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: controller.isSubmitting.value
@@ -329,8 +356,8 @@ class _PenindakDetailScreenState extends State<PenindakDetailScreen> {
                             ),
                           ),
                   ),
-                ),
-              ),
+                );
+              }),
             ],
           ),
         );

@@ -50,17 +50,26 @@ class PenindakListController extends GetxController {
 
       final result = await _service.getAllLaporan(
         jenisLaporan: selectedJenisLaporan.value,
-        search: searchController.text.isNotEmpty ? searchController.text : null,
       );
 
-      // Sort by waktu
-      if (isAscending.value) {
-        result.sort((a, b) => a.waktu.compareTo(b.waktu));
-      } else {
-        result.sort((a, b) => b.waktu.compareTo(a.waktu));
+      // Local filter by pelapor name if search is not empty
+      List<PenindakLaporanModel> filteredResult = result;
+      if (searchController.text.isNotEmpty) {
+        final searchQuery = searchController.text.toLowerCase();
+        filteredResult = result.where((laporan) {
+          return laporan.pelaporName.toLowerCase().contains(searchQuery) ||
+              laporan.alamat.toLowerCase().contains(searchQuery);
+        }).toList();
       }
 
-      laporanList.value = result;
+      // Sort by ID (default descending - newest first)
+      if (isAscending.value) {
+        filteredResult.sort((a, b) => a.id.compareTo(b.id));
+      } else {
+        filteredResult.sort((a, b) => b.id.compareTo(a.id));
+      }
+
+      laporanList.value = filteredResult;
     } catch (e) {
       errorMessage.value = e.toString().replaceAll('Exception: ', '');
     } finally {

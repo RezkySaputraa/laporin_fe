@@ -22,13 +22,17 @@ class _UserHomepageScreenState extends State<UserHomepageScreen> {
   @override
   void initState() {
     super.initState();
-    controller = Get.isRegistered<UserHomepageController>()
-        ? Get.find<UserHomepageController>()
-        : Get.put(UserHomepageController());
+    // Delete old controller if exists and create new one to ensure fresh data
+    if (Get.isRegistered<UserHomepageController>()) {
+      Get.delete<UserHomepageController>();
+    }
+    controller = Get.put(UserHomepageController());
   }
 
   Future<void> _logout() async {
     await controller.logout();
+    // Delete all GetX controllers to clear old data from memory
+    Get.deleteAll();
     if (mounted) {
       Navigator.pushAndRemoveUntil(
         context,

@@ -209,14 +209,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                           // role = 1 -> Admin (Penindak)
                                           // role = 2 -> User (Masyarakat)
                                           Widget destination;
-                                          if (loginController.userRoles.value == 1) {
-                                            destination = const PenindakHomepageScreen();
-                                          } else if (loginController.userRoles.value == 2) {
-                                            destination = const UserHomepageScreen();
+                                          if (loginController.userRoles.value ==
+                                              1) {
+                                            destination =
+                                                const PenindakHomepageScreen();
+                                          } else if (loginController
+                                                  .userRoles
+                                                  .value ==
+                                              2) {
+                                            destination =
+                                                const UserHomepageScreen();
                                           } else {
                                             destination = ProfileGoogleScreen();
                                           }
-                                          
+
                                           Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(
@@ -289,12 +295,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Widget destination;
                                 if (loginController.userRoles.value == 1) {
                                   destination = const PenindakHomepageScreen();
-                                } else if (loginController.userRoles.value == 2) {
+                                } else if (loginController.userRoles.value ==
+                                    2) {
                                   destination = const UserHomepageScreen();
                                 } else {
                                   destination = ProfileGoogleScreen();
                                 }
-                                
+
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(

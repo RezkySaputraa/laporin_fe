@@ -3,7 +3,7 @@ import 'package:laporin_app/services/shared_preference/auth_shared_preferences.d
 
 class UserHomepageController extends GetxController {
   final AuthSharedPreferences authPrefs = AuthSharedPreferences();
-  
+
   RxString username = 'User'.obs;
   RxInt currentIndex = 0.obs;
 

@@ -144,12 +144,7 @@ class ProfileGoogleScreen extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerRight,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => LaporinScreen()),
-                        );
-                      },
+                      onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(
                           vertical: 14,
@@ -169,23 +164,14 @@ class ProfileGoogleScreen extends StatelessWidget {
                             "assets/images/login_screen/google.svg",
                           ),
                           SizedBox(width: 10),
-                          googleController.loginProfile.value == "google"
-                              ? Text(
-                                  "Service by Google",
-                                  style: GoogleFonts.inter(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                )
-                              : Text(
-                                  "Login With Credential",
-                                  style: GoogleFonts.inter(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
+                          Text(
+                            "Service by Google",
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ],
                       ),
                     ),

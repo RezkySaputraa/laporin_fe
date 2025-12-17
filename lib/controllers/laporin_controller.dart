@@ -68,6 +68,9 @@ class LaporinController extends GetxController {
                   Navigator.of(context).pop();
                   final picked = await picker.pickImage(
                     source: ImageSource.camera,
+                    maxWidth: 1024,
+                    maxHeight: 1024,
+                    imageQuality: 80,
                   );
                   if (picked != null) {
                     pickedImage.value = picked;

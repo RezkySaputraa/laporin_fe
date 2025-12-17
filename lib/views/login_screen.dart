@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:laporin_app/controllers/login_controller.dart';
 import 'package:laporin_app/views/penindak_homepage_screen.dart';
+import 'package:laporin_app/views/user_homepage_screen.dart';
 import 'package:laporin_app/views/profile_google_screen.dart';
 import 'package:laporin_app/views/register_screen.dart';
 
@@ -205,11 +206,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                         if (mounted) {
                                           // Navigate based on role
-                                          Widget destination =
-                                              loginController.userRoles.value ==
-                                                  1
-                                              ? const PenindakHomepageScreen()
-                                              : ProfileGoogleScreen();
+                                          // role = 1 -> Admin (Penindak)
+                                          // role = 2 -> User (Masyarakat)
+                                          Widget destination;
+                                          if (loginController.userRoles.value == 1) {
+                                            destination = const PenindakHomepageScreen();
+                                          } else if (loginController.userRoles.value == 2) {
+                                            destination = const UserHomepageScreen();
+                                          } else {
+                                            destination = ProfileGoogleScreen();
+                                          }
+                                          
                                           Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(
@@ -277,10 +284,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (result == true) {
                               if (mounted) {
                                 // Navigate based on role
-                                Widget destination =
-                                    loginController.userRoles.value == 1
-                                    ? const PenindakHomepageScreen()
-                                    : ProfileGoogleScreen();
+                                // role = 1 -> Admin (Penindak)
+                                // role = 2 -> User (Masyarakat)
+                                Widget destination;
+                                if (loginController.userRoles.value == 1) {
+                                  destination = const PenindakHomepageScreen();
+                                } else if (loginController.userRoles.value == 2) {
+                                  destination = const UserHomepageScreen();
+                                } else {
+                                  destination = ProfileGoogleScreen();
+                                }
+                                
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(

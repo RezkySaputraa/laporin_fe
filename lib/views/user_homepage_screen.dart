@@ -5,6 +5,7 @@ import 'package:laporin_app/controllers/user_homepage_controller.dart';
 import 'package:laporin_app/views/login_screen.dart';
 import 'package:laporin_app/views/user_list_screen.dart';
 import 'package:laporin_app/views/profile_google_screen.dart';
+import 'package:laporin_app/views/user_profile_screen.dart';
 
 class UserHomepageScreen extends StatefulWidget {
   const UserHomepageScreen({super.key});
@@ -128,14 +129,25 @@ class _UserHomepageScreenState extends State<UserHomepageScreen> {
                     ],
                   ),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ProfileGoogleScreen(),
-                        ),
-                      );
+                      // Cek login method
+                      final loginMethod = await controller.authPrefs.getLogin();
+                      if (loginMethod == 'google') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ProfileGoogleScreen(),
+                          ),
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => UserProfileScreen(),
+                          ),
+                        );
+                      }
                     },
                     child: Container(
                       padding: const EdgeInsets.all(8),
@@ -238,13 +250,25 @@ class _UserHomepageScreenState extends State<UserHomepageScreen> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ProfileGoogleScreen(),
-                          ),
-                        );
+                      onTap: () async {
+                        // Cek login method
+                        final loginMethod = await controller.authPrefs
+                            .getLogin();
+                        if (loginMethod == 'google') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ProfileGoogleScreen(),
+                            ),
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => UserProfileScreen(),
+                            ),
+                          );
+                        }
                       },
                       child: Container(
                         padding: const EdgeInsets.all(2),

@@ -158,48 +158,22 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Alamat',
-                              style: GoogleFonts.inter(
-                                fontSize: 12,
-                                color: Colors.grey.shade600,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              laporan!['alamat'] ?? '',
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          laporan!['alamat'] ?? '',
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            'Jenis Laporan',
-                            style: GoogleFonts.inter(
-                              fontSize: 12,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            laporan!['jenis_laporan_nama'] ?? '',
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              color: const Color(0xFF0F55C7),
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        laporan!['jenis_laporan_nama'] ?? '',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: const Color(0xFF0F55C7),
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ],
                   ),

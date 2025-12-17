@@ -5,6 +5,7 @@ import 'package:laporin_app/controllers/penindak_homepage_controller.dart';
 import 'package:laporin_app/views/login_screen.dart';
 import 'package:laporin_app/views/penindak_list_screen.dart';
 import 'package:laporin_app/views/profile_google_screen.dart';
+import 'package:laporin_app/views/user_profile_screen.dart';
 
 class PenindakHomepageScreen extends StatefulWidget {
   const PenindakHomepageScreen({super.key});
@@ -317,7 +318,7 @@ class _PenindakHomepageScreenState extends State<PenindakHomepageScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ProfileGoogleScreen(),
+                            builder: (_) => UserProfileScreen(),
                           ),
                         );
                       },

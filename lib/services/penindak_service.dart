@@ -129,6 +129,21 @@ class PenindakService {
     }
   }
 
+  /// Delete image from Cloudinary/server
+  Future<Map<String, dynamic>> deleteImageFromServer(String publicId) async {
+    try {
+      final response = await dio.delete(
+        "$baseUrl/media/delete",
+        data: {'public_id': publicId},
+        options: Options(headers: {"Content-Type": "application/json"}),
+      );
+
+      return response.data;
+    } on DioException catch (e) {
+      throw Exception(_handleError(e));
+    }
+  }
+
   String _handleError(DioException e) {
     if (e.response != null) {
       final data = e.response?.data;

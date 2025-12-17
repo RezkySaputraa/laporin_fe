@@ -372,15 +372,15 @@ class _PenindakDetailScreenState extends State<PenindakDetailScreen> {
     switch (status) {
       case 0:
         bgColor = Colors.red;
-        text = 'Belum ditindak';
+        text = 'belum ditindak';
         break;
       case 1:
-        bgColor = Colors.orange;
-        text = 'Sedang diproses';
+        bgColor = const Color(0xFF00BCD4); // Cyan/Teal color
+        text = 'sedang diproses';
         break;
       case 2:
-        bgColor = Colors.green;
-        text = 'Selesai';
+        bgColor = const Color(0xFF0F55C7); // Blue color
+        text = 'selesai';
         break;
       default:
         bgColor = Colors.grey;

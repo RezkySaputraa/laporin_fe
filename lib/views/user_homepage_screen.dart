@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:laporin_app/controllers/user_homepage_controller.dart';
@@ -158,10 +159,10 @@ class _UserHomepageScreenState extends State<UserHomepageScreen> {
                           color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(
-                          Icons.campaign_rounded,
-                          color: Colors.white,
-                          size: 28,
+                        child: SvgPicture.asset(
+                          'assets/images/opening_screen/logo.svg',
+                          width: 36,
+                          height: 36,
                         ),
                       ),
                       const SizedBox(width: 12),

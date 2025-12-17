@@ -370,14 +370,14 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
     switch (status) {
       case 0:
         bgColor = Colors.red;
-        text = 'Belum ditindak';
+        text = 'Belum Ditindak';
         break;
       case 1:
-        bgColor = Colors.orange;
-        text = 'Sedang diproses';
+        bgColor = const Color(0xFF00BCD4); // Cyan/Teal color
+        text = 'Sedang Diproses';
         break;
       case 2:
-        bgColor = Colors.green;
+        bgColor = const Color(0xFF0F55C7); // Blue color
         text = 'Selesai';
         break;
       default:

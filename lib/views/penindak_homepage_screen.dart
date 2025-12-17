@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:laporin_app/controllers/penindak_homepage_controller.dart';
@@ -131,10 +132,10 @@ class _PenindakHomepageScreenState extends State<PenindakHomepageScreen> {
                           color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(
-                          Icons.admin_panel_settings,
-                          color: Colors.white,
-                          size: 28,
+                        child: SvgPicture.asset(
+                          'assets/images/opening_screen/logo.svg',
+                          width: 36,
+                          height: 36,
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -572,7 +573,7 @@ class _PenindakHomepageScreenState extends State<PenindakHomepageScreen> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => ProfileGoogleScreen()),
+                    MaterialPageRoute(builder: (_) => UserProfileScreen()),
                   );
                 },
               ),
@@ -816,7 +817,7 @@ class _PenindakHomepageScreenState extends State<PenindakHomepageScreen> {
                     ],
                   ),
                   child: const Icon(
-                    Icons.camera_alt_rounded,
+                    Icons.shield_moon,
                     color: Colors.white,
                     size: 26,
                   ),

@@ -447,15 +447,15 @@ class _UserListScreenState extends State<UserListScreen> {
     switch (status) {
       case 0:
         bgColor = Colors.red;
-        text = 'belum ditindak';
+        text = 'Belum Ditindak';
         break;
       case 1:
         bgColor = const Color(0xFF00BCD4); // Cyan/Teal color
-        text = 'sedang diproses';
+        text = 'Sedang Diproses';
         break;
       case 2:
         bgColor = const Color(0xFF0F55C7); // Blue color
-        text = 'selesai';
+        text = 'Selesai';
         break;
       default:
         bgColor = Colors.grey;

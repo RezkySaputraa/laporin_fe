@@ -3,7 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:laporin_app/controllers/profile_google_controller.dart';
-import 'package:laporin_app/views/laporin_screen.dart';
 
 class ProfileGoogleScreen extends StatelessWidget {
   final ProfileGoogleController googleController = Get.put(

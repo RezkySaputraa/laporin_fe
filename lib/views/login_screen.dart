@@ -205,9 +205,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                         loginController.resetForm();
 
                                         if (mounted) {
-                                          // Navigate based on role
-                                          // role = 1 -> Admin (Penindak)
-                                          // role = 2 -> User (Masyarakat)
                                           Widget destination;
                                           if (loginController.userRoles.value ==
                                               1) {
@@ -268,6 +265,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       style: GoogleFonts.inter(
                                         fontSize: 16,
                                         color: Colors.white,
+                                        fontWeight: FontWeight.w400,
                                       ),
                                     ),
                             ),
@@ -283,59 +281,84 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        ElevatedButton.icon(
-                          onPressed: () async {
-                            final bool result = await loginController
-                                .continueWithGoogle(context);
-                            if (result == true) {
-                              if (mounted) {
-                                // Navigate based on role
-                                // role = 1 -> Admin (Penindak)
-                                // role = 2 -> User (Masyarakat)
-                                Widget destination;
-                                if (loginController.userRoles.value == 1) {
-                                  destination = const PenindakHomepageScreen();
-                                } else if (loginController.userRoles.value ==
-                                    2) {
-                                  destination = const UserHomepageScreen();
-                                } else {
-                                  destination = ProfileGoogleScreen();
-                                }
+                        Obx(
+                          () => ElevatedButton.icon(
+                            onPressed: loginController.isLoading.value
+                                ? null // disable button
+                                : () async {
+                                    final bool result = await loginController
+                                        .continueWithGoogle(context);
 
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => destination,
+                                    if (result == true) {
+                                      if (mounted) {
+                                        Widget destination;
+
+                                        if (loginController.userRoles.value ==
+                                            1) {
+                                          destination =
+                                              const PenindakHomepageScreen();
+                                        } else if (loginController
+                                                .userRoles
+                                                .value ==
+                                            2) {
+                                          destination =
+                                              const UserHomepageScreen();
+                                        } else {
+                                          destination = ProfileGoogleScreen();
+                                        }
+
+                                        Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => destination,
+                                          ),
+                                          (route) => false,
+                                        );
+                                      }
+                                    } else {
+                                      if (mounted) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text("Login Gagal"),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  },
+
+                            icon: loginController.isLoading.value
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.grey,
+                                    ),
+                                  )
+                                : SvgPicture.asset(
+                                    "assets/images/login_screen/google.svg",
                                   ),
-                                  (route) => false,
-                                );
-                              }
-                            } else {
-                              if (mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text("Login Gagal")),
-                                );
-                              }
-                            }
-                          },
-                          icon: SvgPicture.asset(
-                            "assets/images/login_screen/google.svg",
-                          ),
-                          label: Text(
-                            "Google",
-                            style: GoogleFonts.inter(
-                              fontSize: 16,
-                              color: Color(0xFF4C4B4B),
+
+                            label: Text(
+                              loginController.isLoading.value ? "" : "Google",
+                              style: GoogleFonts.inter(
+                                fontSize: 16,
+                                color: const Color(0xFF4C4B4B),
+                              ),
                             ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFF3F3F3),
-                            padding: EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFF3F3F3),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
                           ),
                         ),
+
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,

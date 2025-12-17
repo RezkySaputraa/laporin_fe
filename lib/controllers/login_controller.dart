@@ -32,6 +32,7 @@ class LoginController extends GetxController {
 
   Future<bool> continueWithGoogle(context) async {
     try {
+      isLoading.value = true;
       GoogleSignIn signIn = GoogleSignIn.instance;
       await signIn.initialize(
         serverClientId: dotenv.env['WEB_CLIENT'],
@@ -86,6 +87,8 @@ class LoginController extends GetxController {
       return false;
     } catch (e) {
       return false;
+    } finally {
+      isLoading.value = false;
     }
   }
 

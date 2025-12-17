@@ -3,7 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class Constants {
   // Base URL
   static String get baseUrl =>
-      dotenv.env['BASE_URL'] ?? 'http://localhost:8081';
+      dotenv.env['BASE_URL'] ?? 'https://laporin-be-724441751884.asia-southeast2.run.app';
 
   // Google OAuth Client IDs
   static String get webClientId => dotenv.env['WEB_CLIENT'] ?? '';

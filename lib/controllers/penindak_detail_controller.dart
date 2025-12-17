@@ -37,6 +37,10 @@ class PenindakDetailController extends GetxController {
 
   /// Load laporan detail by ID
   Future<void> loadDetail(int laporanId) async {
+    // Reset form before loading new data
+    resetForm();
+    laporan.value = null;
+
     try {
       isLoading.value = true;
       errorMessage.value = '';
@@ -47,6 +51,11 @@ class PenindakDetailController extends GetxController {
       // Pre-fill catatan if exists
       if (result?.tindak?.catatanPenindak != null) {
         catatanController.text = result!.tindak!.catatanPenindak!;
+      }
+
+      // Pre-fill image URL if exists (from tindak.hasil)
+      if (result?.tindak?.hasil != null && result!.tindak!.hasil!.isNotEmpty) {
+        uploadedImageUrl.value = result.tindak!.hasil!;
       }
     } catch (e) {
       errorMessage.value = e.toString().replaceAll('Exception: ', '');

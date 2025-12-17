@@ -74,16 +74,12 @@ class LaporinService {
   Future<List<dynamic>> getUserLaporan({
     required int userId,
     int? jenisLaporan,
-    String? search,
   }) async {
     try {
       Map<String, dynamic> queryParams = {};
 
       if (jenisLaporan != null) {
         queryParams['jenis_laporan'] = jenisLaporan;
-      }
-      if (search != null && search.isNotEmpty) {
-        queryParams['search'] = search;
       }
 
       final response = await dio.get(

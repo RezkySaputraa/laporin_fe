@@ -15,11 +15,11 @@ class UserListScreen extends StatefulWidget {
 class _UserListScreenState extends State<UserListScreen> {
   final LaporinService _service = LaporinService();
   final AuthSharedPreferences _authPrefs = AuthSharedPreferences();
-  final TextEditingController searchController = TextEditingController();
 
   List<Map<String, dynamic>> laporanList = [];
   List<Map<String, dynamic>> jenisLaporanList = [];
   int? selectedJenisLaporan;
+  int? selectedStatus;
   bool isAscending = false;
   bool isLoading = false;
   String errorMessage = '';
@@ -39,7 +39,6 @@ class _UserListScreenState extends State<UserListScreen> {
 
   @override
   void dispose() {
-    searchController.dispose();
     super.dispose();
   }
 
@@ -68,18 +67,25 @@ class _UserListScreenState extends State<UserListScreen> {
       final result = await _service.getUserLaporan(
         userId: userId!,
         jenisLaporan: selectedJenisLaporan,
-        search: searchController.text.isNotEmpty ? searchController.text : null,
       );
 
+      // Filter by status (frontend filtering)
+      var filteredResult = result;
+      if (selectedStatus != null) {
+        filteredResult = result.where((item) {
+          return item['status'] == selectedStatus;
+        }).toList();
+      }
+
       // Sort by waktu
-      result.sort((a, b) {
+      filteredResult.sort((a, b) {
         final dateA = DateTime.parse(a['waktu']);
         final dateB = DateTime.parse(b['waktu']);
         return isAscending ? dateA.compareTo(dateB) : dateB.compareTo(dateA);
       });
 
       setState(() {
-        laporanList = result
+        laporanList = filteredResult
             .map((item) => item as Map<String, dynamic>)
             .toList();
       });
@@ -234,24 +240,51 @@ class _UserListScreenState extends State<UserListScreen> {
 
           const SizedBox(width: 8),
 
-          // Search Field
+          // Status Filter Dropdown
           Expanded(
             flex: 3,
-            child: TextField(
-              controller: searchController,
-              onSubmitted: (_) => _loadLaporan(),
-              decoration: InputDecoration(
-                hintText: 'Search...',
-                hintStyle: GoogleFonts.inter(fontSize: 14),
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: _loadLaporan,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade300),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<int?>(
+                  value: selectedStatus,
+                  hint: Text(
+                    'Semua status',
+                    style: GoogleFonts.inter(fontSize: 14),
+                  ),
+                  isExpanded: true,
+                  items: [
+                    DropdownMenuItem<int?>(
+                      value: null,
+                      child: Text('Semua Status', style: GoogleFonts.inter()),
+                    ),
+                    DropdownMenuItem<int?>(
+                      value: 0,
+                      child: Text('Belum ditindak', style: GoogleFonts.inter()),
+                    ),
+                    DropdownMenuItem<int?>(
+                      value: 1,
+                      child: Text(
+                        'Sedang diproses',
+                        style: GoogleFonts.inter(),
+                      ),
+                    ),
+                    DropdownMenuItem<int?>(
+                      value: 2,
+                      child: Text('Selesai', style: GoogleFonts.inter()),
+                    ),
+                  ],
+                  onChanged: (statusId) {
+                    setState(() {
+                      selectedStatus = statusId;
+                    });
+                    _loadLaporan();
+                  },
                 ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12),
               ),
             ),
           ),

@@ -26,25 +26,16 @@ class RegisterController extends GetxController {
     try {
       isLoading.value = true;
       errorMessage.value = '';
-      
+
       final registerData = RegisterModel(
         username: usernameController.text.trim(),
         email: emailController.text.trim(),
         password: passwordController.text,
       );
-      
-      debugPrint('=== REGISTER DEBUG ===');
-      debugPrint('Username: ${registerData.username}');
-      debugPrint('Email: ${registerData.email}');
-      debugPrint('Password length: ${registerData.password.length}');
-      debugPrint('Request data: ${registerData.toJson()}');
-      
-      final result = await registerService.register(registerData);
-      
-      debugPrint('Register success: $result');
+
+      await registerService.register(registerData);
       return true;
     } catch (e) {
-      debugPrint('Register error: $e');
       errorMessage.value = e.toString().replaceAll('Exception: ', '');
       return false;
     } finally {

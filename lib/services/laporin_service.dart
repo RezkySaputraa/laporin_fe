@@ -3,7 +3,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:laporin_app/models/laporin_model.dart';
 
 class LaporinService {
-  final String baseUrl = "https://laporin-be-724441751884.asia-southeast2.run.app";
+  final String baseUrl =
+      "https://laporin-be-724441751884.asia-southeast2.run.app";
   final dio = Dio();
 
   Future<void> submitLaporan(LaporinModel data) async {
@@ -51,6 +52,68 @@ class LaporinService {
       return response.data as List<dynamic>;
     } catch (e) {
       throw Exception("Gagal mendapatkan jenis laporan");
+    }
+  }
+
+  /// Get laporan by user ID (riwayat laporan user)
+  Future<List<dynamic>> getUserLaporan({
+    required int userId,
+    int? jenisLaporan,
+    String? search,
+  }) async {
+    try {
+      Map<String, dynamic> queryParams = {};
+
+      if (jenisLaporan != null) {
+        queryParams['jenis_laporan'] = jenisLaporan;
+      }
+      if (search != null && search.isNotEmpty) {
+        queryParams['search'] = search;
+      }
+
+      final response = await dio.get(
+        "$baseUrl/laporin/riwayat/$userId",
+        queryParameters: queryParams.isNotEmpty ? queryParams : null,
+        options: Options(headers: {"Content-Type": "application/json"}),
+      );
+
+      if (response.data['success'] == true && response.data['data'] != null) {
+        return response.data['data'] as List<dynamic>;
+      }
+
+      return [];
+    } on DioException catch (e) {
+      if (e.response != null) {
+        final data = e.response?.data;
+        if (data is Map && data['error'] != null) {
+          throw Exception(data['error']);
+        }
+      }
+      throw Exception("Terjadi kesalahan jaringan");
+    }
+  }
+
+  /// Get detail laporan for user
+  Future<Map<String, dynamic>?> getDetailLaporan(int id) async {
+    try {
+      final response = await dio.get(
+        "$baseUrl/laporin/detail/$id",
+        options: Options(headers: {"Content-Type": "application/json"}),
+      );
+
+      if (response.data['success'] == true && response.data['data'] != null) {
+        return response.data['data'] as Map<String, dynamic>;
+      }
+
+      return null;
+    } on DioException catch (e) {
+      if (e.response != null) {
+        final data = e.response?.data;
+        if (data is Map && data['error'] != null) {
+          throw Exception(data['error']);
+        }
+      }
+      throw Exception("Terjadi kesalahan jaringan");
     }
   }
 }

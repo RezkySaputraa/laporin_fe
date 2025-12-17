@@ -1,27 +1,97 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:laporin_app/controllers/penindak_list_controller.dart';
-import 'package:laporin_app/models/penindak_laporan_model.dart';
-import 'package:laporin_app/views/penindak_detail_screen.dart';
+import 'package:laporin_app/services/laporin_service.dart';
+import 'package:laporin_app/services/shared_preference/auth_shared_preferences.dart';
+import 'package:laporin_app/views/user_detail_screen.dart';
 
-class PenindakListScreen extends StatefulWidget {
-  const PenindakListScreen({super.key});
+class UserListScreen extends StatefulWidget {
+  const UserListScreen({super.key});
 
   @override
-  State<PenindakListScreen> createState() => _PenindakListScreenState();
+  State<UserListScreen> createState() => _UserListScreenState();
 }
 
-class _PenindakListScreenState extends State<PenindakListScreen> {
-  late PenindakListController controller;
+class _UserListScreenState extends State<UserListScreen> {
+  final LaporinService _service = LaporinService();
+  final AuthSharedPreferences _authPrefs = AuthSharedPreferences();
+  final TextEditingController searchController = TextEditingController();
+
+  List<Map<String, dynamic>> laporanList = [];
+  List<Map<String, dynamic>> jenisLaporanList = [];
+  int? selectedJenisLaporan;
+  bool isAscending = false;
+  bool isLoading = false;
+  String errorMessage = '';
+  int? userId;
 
   @override
   void initState() {
     super.initState();
-    controller = Get.isRegistered<PenindakListController>()
-        ? Get.find<PenindakListController>()
-        : Get.put(PenindakListController());
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    userId = await _authPrefs.getUserId();
+    await _loadJenisLaporan();
+    await _loadLaporan();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadJenisLaporan() async {
+    try {
+      final result = await _service.getJenisLaporan();
+      setState(() {
+        jenisLaporanList = result
+            .map((item) => {'id': item['id'], 'nama': item['nama']})
+            .toList();
+      });
+    } catch (e) {
+      // Ignore error, dropdown will just be empty
+    }
+  }
+
+  Future<void> _loadLaporan() async {
+    if (userId == null) return;
+
+    try {
+      setState(() {
+        isLoading = true;
+        errorMessage = '';
+      });
+
+      final result = await _service.getUserLaporan(
+        userId: userId!,
+        jenisLaporan: selectedJenisLaporan,
+        search: searchController.text.isNotEmpty ? searchController.text : null,
+      );
+
+      // Sort by waktu
+      result.sort((a, b) {
+        final dateA = DateTime.parse(a['waktu']);
+        final dateB = DateTime.parse(b['waktu']);
+        return isAscending ? dateA.compareTo(dateB) : dateB.compareTo(dateA);
+      });
+
+      setState(() {
+        laporanList = result
+            .map((item) => item as Map<String, dynamic>)
+            .toList();
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage = e.toString().replaceAll('Exception: ', '');
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -36,7 +106,7 @@ class _PenindakListScreenState extends State<PenindakListScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'List Laporin',
+          'Riwayat Laporin',
           style: GoogleFonts.inter(
             fontSize: 20,
             fontWeight: FontWeight.w600,
@@ -52,52 +122,47 @@ class _PenindakListScreenState extends State<PenindakListScreen> {
 
           // Laporan List
           Expanded(
-            child: Obx(() {
-              if (controller.isLoading.value) {
-                return const Center(
-                  child: CircularProgressIndicator(color: Color(0xFF0F55C7)),
-                );
-              }
-
-              if (controller.errorMessage.value.isNotEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        controller.errorMessage.value,
-                        style: GoogleFonts.inter(color: Colors.red),
+            child: isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(color: Color(0xFF0F55C7)),
+                  )
+                : errorMessage.isNotEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          errorMessage,
+                          style: GoogleFonts.inter(color: Colors.red),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: _loadLaporan,
+                          child: const Text('Coba Lagi'),
+                        ),
+                      ],
+                    ),
+                  )
+                : laporanList.isEmpty
+                ? Center(
+                    child: Text(
+                      'Tidak ada laporan',
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        color: Colors.grey,
                       ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: controller.loadLaporan,
-                        child: const Text('Coba Lagi'),
-                      ),
-                    ],
+                    ),
+                  )
+                : RefreshIndicator(
+                    onRefresh: _loadLaporan,
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: laporanList.length,
+                      itemBuilder: (context, index) {
+                        return _buildLaporanCard(laporanList[index]);
+                      },
+                    ),
                   ),
-                );
-              }
-
-              if (controller.laporanList.isEmpty) {
-                return Center(
-                  child: Text(
-                    'Tidak ada laporan',
-                    style: GoogleFonts.inter(fontSize: 16, color: Colors.grey),
-                  ),
-                );
-              }
-
-              return RefreshIndicator(
-                onRefresh: controller.refreshData,
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: controller.laporanList.length,
-                  itemBuilder: (context, index) {
-                    return _buildLaporanCard(controller.laporanList[index]);
-                  },
-                ),
-              );
-            }),
           ),
         ],
       ),
@@ -112,14 +177,15 @@ class _PenindakListScreenState extends State<PenindakListScreen> {
         children: [
           // Sort Button
           IconButton(
-            onPressed: controller.toggleSortOrder,
-            icon: Obx(
-              () => Icon(
-                controller.isAscending.value
-                    ? Icons.arrow_upward
-                    : Icons.arrow_downward,
-                color: const Color(0xFF0F55C7),
-              ),
+            onPressed: () {
+              setState(() {
+                isAscending = !isAscending;
+              });
+              _loadLaporan();
+            },
+            icon: Icon(
+              isAscending ? Icons.arrow_upward : Icons.arrow_downward,
+              color: const Color(0xFF0F55C7),
             ),
           ),
 
@@ -132,32 +198,35 @@ class _PenindakListScreenState extends State<PenindakListScreen> {
                 border: Border.all(color: Colors.grey.shade300),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Obx(
-                () => DropdownButtonHideUnderline(
-                  child: DropdownButton<int?>(
-                    value: controller.selectedJenisLaporan.value,
-                    hint: Text(
-                      'Jenis laporan',
-                      style: GoogleFonts.inter(fontSize: 14),
-                    ),
-                    isExpanded: true,
-                    items: [
-                      DropdownMenuItem<int?>(
-                        value: null,
-                        child: Text('Semua', style: GoogleFonts.inter()),
-                      ),
-                      ...controller.jenisLaporanList.map((jenis) {
-                        return DropdownMenuItem<int?>(
-                          value: jenis['id'],
-                          child: Text(
-                            jenis['nama'] ?? '',
-                            style: GoogleFonts.inter(),
-                          ),
-                        );
-                      }),
-                    ],
-                    onChanged: controller.onFilterByJenis,
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<int?>(
+                  value: selectedJenisLaporan,
+                  hint: Text(
+                    'Semua laporan',
+                    style: GoogleFonts.inter(fontSize: 14),
                   ),
+                  isExpanded: true,
+                  items: [
+                    DropdownMenuItem<int?>(
+                      value: null,
+                      child: Text('Semua', style: GoogleFonts.inter()),
+                    ),
+                    ...jenisLaporanList.map((jenis) {
+                      return DropdownMenuItem<int?>(
+                        value: jenis['id'],
+                        child: Text(
+                          jenis['nama'] ?? '',
+                          style: GoogleFonts.inter(),
+                        ),
+                      );
+                    }),
+                  ],
+                  onChanged: (jenisId) {
+                    setState(() {
+                      selectedJenisLaporan = jenisId;
+                    });
+                    _loadLaporan();
+                  },
                 ),
               ),
             ),
@@ -169,15 +238,14 @@ class _PenindakListScreenState extends State<PenindakListScreen> {
           Expanded(
             flex: 3,
             child: TextField(
-              controller: controller.searchController,
-              onSubmitted: controller.onSearch,
+              controller: searchController,
+              onSubmitted: (_) => _loadLaporan(),
               decoration: InputDecoration(
                 hintText: 'Search...',
                 hintStyle: GoogleFonts.inter(fontSize: 14),
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.search),
-                  onPressed: () =>
-                      controller.onSearch(controller.searchController.text),
+                  onPressed: _loadLaporan,
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -192,17 +260,17 @@ class _PenindakListScreenState extends State<PenindakListScreen> {
     );
   }
 
-  Widget _buildLaporanCard(PenindakLaporanModel laporan) {
+  Widget _buildLaporanCard(Map<String, dynamic> laporan) {
     return GestureDetector(
       onTap: () async {
         await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => PenindakDetailScreen(laporanId: laporan.id),
+            builder: (_) => UserDetailScreen(laporanId: laporan['id']),
           ),
         );
         // Refresh list when returning from detail
-        controller.refreshData();
+        _loadLaporan();
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -225,7 +293,7 @@ class _PenindakListScreenState extends State<PenindakListScreen> {
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: CachedNetworkImage(
-                imageUrl: laporan.bukti,
+                imageUrl: laporan['bukti'] ?? '',
                 width: 60,
                 height: 60,
                 fit: BoxFit.cover,
@@ -254,13 +322,13 @@ class _PenindakListScreenState extends State<PenindakListScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        laporan.pelaporName,
+                        laporan['jenis_laporan_nama'] ?? 'Tidak ada jenis',
                         style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      _buildStatusBadge(laporan.status),
+                      _buildStatusBadge(laporan['status'] ?? 0),
                     ],
                   ),
                   const SizedBox(height: 4),
@@ -273,7 +341,7 @@ class _PenindakListScreenState extends State<PenindakListScreen> {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        laporan.formattedDate,
+                        _formatDate(laporan['waktu']),
                         style: GoogleFonts.inter(
                           fontSize: 12,
                           color: Colors.grey,
@@ -283,11 +351,13 @@ class _PenindakListScreenState extends State<PenindakListScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    laporan.jenisLaporanName,
+                    laporan['alamat'] ?? '',
                     style: GoogleFonts.inter(
                       fontSize: 12,
                       color: const Color(0xFF0F55C7),
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -298,6 +368,16 @@ class _PenindakListScreenState extends State<PenindakListScreen> {
     );
   }
 
+  String _formatDate(String? dateString) {
+    if (dateString == null) return 'dd/mm/yy';
+    try {
+      final date = DateTime.parse(dateString);
+      return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year.toString().substring(2)}';
+    } catch (e) {
+      return 'dd/mm/yy';
+    }
+  }
+
   Widget _buildStatusBadge(int status) {
     Color bgColor;
     String text;
@@ -305,15 +385,15 @@ class _PenindakListScreenState extends State<PenindakListScreen> {
     switch (status) {
       case 0:
         bgColor = Colors.red;
-        text = 'Belum ditindak';
+        text = 'belum ditindak';
         break;
       case 1:
-        bgColor = Colors.orange;
-        text = 'Sedang diproses';
+        bgColor = const Color(0xFF00BCD4); // Cyan/Teal color
+        text = 'sedang diproses';
         break;
       case 2:
-        bgColor = Colors.green;
-        text = 'Selesai';
+        bgColor = const Color(0xFF0F55C7); // Blue color
+        text = 'selesai';
         break;
       default:
         bgColor = Colors.grey;

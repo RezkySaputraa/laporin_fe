@@ -226,7 +226,7 @@ class _PenindakDetailScreenState extends State<PenindakDetailScreen> {
 
               // Upload Bukti Tindakan
               Text(
-                'Bukti Tindakan (Opsional)',
+                'Bukti Tindakan',
                 style: GoogleFonts.inter(
                   fontSize: 14,
                   color: Colors.grey.shade600,
@@ -283,9 +283,36 @@ class _PenindakDetailScreenState extends State<PenindakDetailScreen> {
                 return const SizedBox.shrink();
               }),
 
-              // Submit Button
-              Obx(
-                () => SizedBox(
+              // Submit Button - only show if status is not 2 (selesai)
+              Obx(() {
+                // Hide button if status is 2 (selesai)
+                if (controller.laporan.value?.status == 2) {
+                  return Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.check_circle, color: Colors.green.shade700),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Laporan ini sudah selesai ditindaklanjuti',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.green.shade700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                return SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: controller.isSubmitting.value
@@ -329,8 +356,8 @@ class _PenindakDetailScreenState extends State<PenindakDetailScreen> {
                             ),
                           ),
                   ),
-                ),
-              ),
+                );
+              }),
             ],
           ),
         );
@@ -402,7 +429,7 @@ class _PenindakDetailScreenState extends State<PenindakDetailScreen> {
         );
       }
 
-      // If image is selected
+      // If image is selected (new local image)
       if (controller.selectedImage.value != null) {
         return Stack(
           children: [
@@ -465,6 +492,70 @@ class _PenindakDetailScreenState extends State<PenindakDetailScreen> {
                   ),
                 ),
               ),
+          ],
+        );
+      }
+
+      // If image URL exists from database (no new local image but URL is present)
+      if (controller.uploadedImageUrl.value.isNotEmpty) {
+        return Stack(
+          children: [
+            Container(
+              width: double.infinity,
+              height: 150,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: CachedNetworkImage(
+                  imageUrl: controller.uploadedImageUrl.value,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: 150,
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey.shade200,
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF0F55C7),
+                      ),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: Colors.grey.shade200,
+                    child: const Center(
+                      child: Icon(Icons.error, color: Colors.red),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 8,
+              left: 8,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.check, color: Colors.white, size: 14),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Tersimpan',
+                      style: GoogleFonts.inter(
+                        fontSize: 10,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         );
       }

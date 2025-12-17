@@ -32,21 +32,41 @@ class PenindakLaporanModel {
   });
 
   factory PenindakLaporanModel.fromJson(Map<String, dynamic> json) {
+    // Handle jenis_laporan yang bisa berupa int atau Map/object
+    int jenisId = 0;
+    JenisData? jenisData;
+
+    final jenisField = json['jenis_laporan'];
+    if (jenisField is int) {
+      jenisId = jenisField;
+    } else if (jenisField is Map<String, dynamic>) {
+      // Jika jenis_laporan adalah object dengan 'nama' field
+      jenisId = jenisField['id'] ?? 0;
+      jenisData = JenisData.fromJson(jenisField);
+    }
+
+    // Jika ada field 'jenis' terpisah, gunakan itu
+    if (json['jenis'] != null) {
+      jenisData = JenisData.fromJson(json['jenis']);
+    }
+
     return PenindakLaporanModel(
       id: json['id'] ?? 0,
       pelapor: json['pelapor'] ?? 0,
-      jenisLaporanId: json['jenis_laporan'] ?? 0,
+      jenisLaporanId: jenisId,
       alamat: json['alamat'] ?? '',
       waktu: DateTime.tryParse(json['waktu'] ?? '') ?? DateTime.now(),
       bukti: json['bukti'] ?? '',
-      hasilTindak: json['hasil_tindak'],
+      hasilTindak: json['hasil_tindak'] is int ? json['hasil_tindak'] : null,
       catatanPelapor: json['catatan_pelapor'] ?? '',
       status: json['status'] ?? 0,
       users: json['users'] != null ? UserData.fromJson(json['users']) : null,
-      jenis: json['jenis'] != null ? JenisData.fromJson(json['jenis']) : null,
+      jenis: jenisData,
       tindak: json['tindak'] != null
           ? TindakData.fromJson(json['tindak'])
-          : null,
+          : (json['tindak_lanjut'] != null
+                ? TindakData.fromJson(json['tindak_lanjut'])
+                : null),
     );
   }
 

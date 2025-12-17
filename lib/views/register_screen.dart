@@ -34,9 +34,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _navigateToLogin() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (_) => const LoginScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
     );
   }
 
@@ -223,9 +221,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   : () async {
                                       FocusScope.of(context).unfocus();
 
-                                      final isFormValid = _formKey
-                                              .currentState
-                                              ?.validate() ??
+                                      final isFormValid =
+                                          _formKey.currentState?.validate() ??
                                           false;
 
                                       if (!isFormValid) return;
@@ -253,7 +250,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       } else {
                                         if (mounted) {
                                           final errorMsg = registerController
-                                              .errorMessage.value;
+                                              .errorMessage
+                                              .value;
                                           ScaffoldMessenger.of(
                                             context,
                                           ).showSnackBar(

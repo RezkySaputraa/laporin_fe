@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="laporin_app"
+        android:label="LaporinAja"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -16,7 +16,7 @@ class _UserListScreenState extends State<UserListScreen> {
   final LaporinService _service = LaporinService();
   final AuthSharedPreferences _authPrefs = AuthSharedPreferences();
   final TextEditingController searchController = TextEditingController();
-  
+
   List<Map<String, dynamic>> laporanList = [];
   List<Map<String, dynamic>> jenisLaporanList = [];
   int? selectedJenisLaporan;
@@ -30,13 +30,13 @@ class _UserListScreenState extends State<UserListScreen> {
     super.initState();
     _initialize();
   }
-  
+
   Future<void> _initialize() async {
     userId = await _authPrefs.getUserId();
     await _loadJenisLaporan();
     await _loadLaporan();
   }
-  
+
   @override
   void dispose() {
     searchController.dispose();
@@ -47,10 +47,9 @@ class _UserListScreenState extends State<UserListScreen> {
     try {
       final result = await _service.getJenisLaporan();
       setState(() {
-        jenisLaporanList = result.map((item) => {
-          'id': item['id'],
-          'nama': item['nama'],
-        }).toList();
+        jenisLaporanList = result
+            .map((item) => {'id': item['id'], 'nama': item['nama']})
+            .toList();
       });
     } catch (e) {
       // Ignore error, dropdown will just be empty
@@ -59,7 +58,7 @@ class _UserListScreenState extends State<UserListScreen> {
 
   Future<void> _loadLaporan() async {
     if (userId == null) return;
-    
+
     try {
       setState(() {
         isLoading = true;
@@ -80,7 +79,9 @@ class _UserListScreenState extends State<UserListScreen> {
       });
 
       setState(() {
-        laporanList = result.map((item) => item as Map<String, dynamic>).toList();
+        laporanList = result
+            .map((item) => item as Map<String, dynamic>)
+            .toList();
       });
     } catch (e) {
       setState(() {
@@ -126,39 +127,42 @@ class _UserListScreenState extends State<UserListScreen> {
                     child: CircularProgressIndicator(color: Color(0xFF0F55C7)),
                   )
                 : errorMessage.isNotEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              errorMessage,
-                              style: GoogleFonts.inter(color: Colors.red),
-                            ),
-                            const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: _loadLaporan,
-                              child: const Text('Coba Lagi'),
-                            ),
-                          ],
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          errorMessage,
+                          style: GoogleFonts.inter(color: Colors.red),
                         ),
-                      )
-                    : laporanList.isEmpty
-                        ? Center(
-                            child: Text(
-                              'Tidak ada laporan',
-                              style: GoogleFonts.inter(fontSize: 16, color: Colors.grey),
-                            ),
-                          )
-                        : RefreshIndicator(
-                            onRefresh: _loadLaporan,
-                            child: ListView.builder(
-                              padding: const EdgeInsets.all(16),
-                              itemCount: laporanList.length,
-                              itemBuilder: (context, index) {
-                                return _buildLaporanCard(laporanList[index]);
-                              },
-                            ),
-                          ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: _loadLaporan,
+                          child: const Text('Coba Lagi'),
+                        ),
+                      ],
+                    ),
+                  )
+                : laporanList.isEmpty
+                ? Center(
+                    child: Text(
+                      'Tidak ada laporan',
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  )
+                : RefreshIndicator(
+                    onRefresh: _loadLaporan,
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: laporanList.length,
+                      itemBuilder: (context, index) {
+                        return _buildLaporanCard(laporanList[index]);
+                      },
+                    ),
+                  ),
           ),
         ],
       ),

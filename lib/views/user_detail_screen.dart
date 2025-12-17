@@ -168,7 +168,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                       ),
                       const SizedBox(width: 16),
                       Text(
-                        laporan!['jenis_laporan_nama'] ?? '',
+                        _getJenisLaporan(),
                         style: GoogleFonts.inter(
                           fontSize: 14,
                           color: const Color(0xFF0F55C7),
@@ -221,28 +221,137 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                       border: Border.all(color: Colors.grey.shade200),
                     ),
                     child: Text(
-                      laporan!['catatan_dari_petugas'] != null &&
-                              laporan!['catatan_dari_petugas']
-                                  .toString()
-                                  .isNotEmpty
-                          ? laporan!['catatan_dari_petugas']
-                          : 'Belum ada catatan dari petugas',
+                      _getCatatanPetugas(),
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         color:
-                            laporan!['catatan_dari_petugas'] != null &&
-                                laporan!['catatan_dari_petugas']
-                                    .toString()
-                                    .isNotEmpty
+                            _getCatatanPetugas() !=
+                                'Belum ada catatan dari petugas'
                             ? Colors.black
                             : Colors.grey.shade400,
                       ),
                     ),
                   ),
+
+                  // Hasil Tindak (Foto dari Petugas)
+                  if (_getHasilTindak() != null) ...[
+                    const SizedBox(height: 24),
+                    Text(
+                      'Hasil Tindak Lanjut',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      width: double.infinity,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: CachedNetworkImage(
+                          imageUrl: _getHasilTindak()!,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.check_circle_outline,
+                                size: 48,
+                                color: Colors.grey.shade400,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Memuat hasil...',
+                                style: GoogleFonts.inter(
+                                  color: Colors.grey.shade400,
+                                ),
+                              ),
+                            ],
+                          ),
+                          errorWidget: (context, url, error) => Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.broken_image,
+                                size: 48,
+                                color: Colors.grey.shade400,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Gagal memuat gambar',
+                                style: GoogleFonts.inter(
+                                  color: Colors.grey.shade400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
     );
+  }
+
+  String _getJenisLaporan() {
+    // Try new format first (jenis_laporan_nama)
+    if (laporan!['jenis_laporan_nama'] != null &&
+        laporan!['jenis_laporan_nama'].toString().isNotEmpty) {
+      return laporan!['jenis_laporan_nama'];
+    }
+
+    // Fallback to nested format (jenis_laporan.nama)
+    if (laporan!['jenis_laporan'] != null &&
+        laporan!['jenis_laporan'] is Map &&
+        laporan!['jenis_laporan']['nama'] != null) {
+      return laporan!['jenis_laporan']['nama'];
+    }
+
+    return 'N/A';
+  }
+
+  String _getCatatanPetugas() {
+    // Try new format first (catatan_dari_petugas)
+    if (laporan!['catatan_dari_petugas'] != null &&
+        laporan!['catatan_dari_petugas'].toString().isNotEmpty) {
+      return laporan!['catatan_dari_petugas'];
+    }
+
+    // Fallback to old format (tindak_lanjut.catatan_penindak)
+    if (laporan!['tindak_lanjut'] != null &&
+        laporan!['tindak_lanjut'] is Map &&
+        laporan!['tindak_lanjut']['catatan_penindak'] != null &&
+        laporan!['tindak_lanjut']['catatan_penindak'].toString().isNotEmpty) {
+      return laporan!['tindak_lanjut']['catatan_penindak'];
+    }
+
+    return 'Belum ada catatan dari petugas';
+  }
+
+  String? _getHasilTindak() {
+    // Try new format first (hasil_tindak_bukti)
+    if (laporan!['hasil_tindak_bukti'] != null &&
+        laporan!['hasil_tindak_bukti'].toString().isNotEmpty) {
+      return laporan!['hasil_tindak_bukti'];
+    }
+
+    // Fallback to old format (tindak_lanjut.hasil)
+    if (laporan!['tindak_lanjut'] != null &&
+        laporan!['tindak_lanjut'] is Map &&
+        laporan!['tindak_lanjut']['hasil'] != null &&
+        laporan!['tindak_lanjut']['hasil'].toString().isNotEmpty) {
+      return laporan!['tindak_lanjut']['hasil'];
+    }
+
+    return null;
   }
 
   String _formatDate(String dateStr) {

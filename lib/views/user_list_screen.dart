@@ -355,7 +355,7 @@ class _UserListScreenState extends State<UserListScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        laporan['jenis_laporan_nama'] ?? 'Tidak ada jenis',
+                        _getJenisLaporan(laporan),
                         style: GoogleFonts.inter(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -399,6 +399,35 @@ class _UserListScreenState extends State<UserListScreen> {
         ),
       ),
     );
+  }
+
+  String _getJenisLaporan(Map<String, dynamic> laporan) {
+    // Try flat format (jenis_laporan_nama)
+    if (laporan['jenis_laporan_nama'] != null &&
+        laporan['jenis_laporan_nama'].toString().isNotEmpty) {
+      return laporan['jenis_laporan_nama'];
+    }
+
+    // Try nested format (jenis_laporan.nama)
+    if (laporan['jenis_laporan'] != null && laporan['jenis_laporan'] is Map) {
+      final jenisLaporan = laporan['jenis_laporan'] as Map<String, dynamic>;
+      if (jenisLaporan['nama'] != null) {
+        return jenisLaporan['nama'];
+      }
+    }
+
+    // Try tindak_lanjut nested format
+    if (laporan['tindak_lanjut'] != null &&
+        laporan['tindak_lanjut'] is Map &&
+        laporan['tindak_lanjut']['jenis_laporan'] != null) {
+      final tindakLanjut = laporan['tindak_lanjut'] as Map<String, dynamic>;
+      if (tindakLanjut['jenis_laporan'] is Map &&
+          tindakLanjut['jenis_laporan']['nama'] != null) {
+        return tindakLanjut['jenis_laporan']['nama'];
+      }
+    }
+
+    return 'N/A';
   }
 
   String _formatDate(String? dateString) {

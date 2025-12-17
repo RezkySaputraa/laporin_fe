@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:laporin_app/services/shared_preference/auth_shared_preferences.dart';
+import 'package:laporin_app/controllers/penindak_homepage_controller.dart';
 import 'package:laporin_app/views/login_screen.dart';
 import 'package:laporin_app/views/penindak_list_screen.dart';
 import 'package:laporin_app/views/profile_google_screen.dart';
@@ -14,28 +15,18 @@ class PenindakHomepageScreen extends StatefulWidget {
 
 class _PenindakHomepageScreenState extends State<PenindakHomepageScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final AuthSharedPreferences _authPrefs = AuthSharedPreferences();
-
-  String username = 'User';
-  int _currentIndex = 0;
+  late PenindakHomepageController controller;
 
   @override
   void initState() {
     super.initState();
-    _loadUserData();
-  }
-
-  Future<void> _loadUserData() async {
-    final name = await _authPrefs.getUsername();
-    if (name != null && mounted) {
-      setState(() {
-        username = name;
-      });
-    }
+    controller = Get.isRegistered<PenindakHomepageController>()
+        ? Get.find<PenindakHomepageController>()
+        : Get.put(PenindakHomepageController());
   }
 
   Future<void> _logout() async {
-    await _authPrefs.clear();
+    await controller.logout();
     if (mounted) {
       Navigator.pushAndRemoveUntil(
         context,
@@ -46,9 +37,7 @@ class _PenindakHomepageScreenState extends State<PenindakHomepageScreen> {
   }
 
   void _onBottomNavTap(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+    controller.setCurrentIndex(index);
 
     if (index == 0) {
       // Beranda - already here
@@ -150,8 +139,8 @@ class _PenindakHomepageScreenState extends State<PenindakHomepageScreen> {
                     },
                     child: Container(
                       padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF0F55C7),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF0F55C7),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -259,7 +248,7 @@ class _PenindakHomepageScreenState extends State<PenindakHomepageScreen> {
                       },
                       child: Container(
                         padding: const EdgeInsets.all(2),
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.white,
                           shape: BoxShape.circle,
                         ),
@@ -290,13 +279,15 @@ class _PenindakHomepageScreenState extends State<PenindakHomepageScreen> {
             ),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                'Selamat Datang\n$username',
-                style: GoogleFonts.inter(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                  height: 1.3,
+              child: Obx(
+                () => Text(
+                  'Selamat Datang\n${controller.username.value}',
+                  style: GoogleFonts.inter(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    height: 1.3,
+                  ),
                 ),
               ),
             ),
@@ -445,80 +436,82 @@ class _PenindakHomepageScreenState extends State<PenindakHomepageScreen> {
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              // Beranda
-              GestureDetector(
-                onTap: () => _onBottomNavTap(0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.home_outlined,
-                      color: _currentIndex == 0
-                          ? const Color(0xFF0F55C7)
-                          : Colors.grey.shade400,
-                    ),
-                    Text(
-                      'Beranda',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: _currentIndex == 0
+          child: Obx(
+            () => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                // Beranda
+                GestureDetector(
+                  onTap: () => _onBottomNavTap(0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.home_outlined,
+                        color: controller.currentIndex.value == 0
                             ? const Color(0xFF0F55C7)
                             : Colors.grey.shade400,
                       ),
-                    ),
-                  ],
+                      Text(
+                        'Beranda',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: controller.currentIndex.value == 0
+                              ? const Color(0xFF0F55C7)
+                              : Colors.grey.shade400,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
 
-              // Laporin (Camera - decorative)
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF0F55C7),
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF0F55C7).withValues(alpha: 0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                // Laporin (Camera - decorative)
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0F55C7),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF0F55C7).withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.camera_alt_outlined,
+                    color: Colors.white,
+                    size: 28,
+                  ),
                 ),
-                child: const Icon(
-                  Icons.camera_alt_outlined,
-                  color: Colors.white,
-                  size: 28,
-                ),
-              ),
 
-              // Laporan
-              GestureDetector(
-                onTap: () => _onBottomNavTap(2),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.assignment_outlined,
-                      color: _currentIndex == 2
-                          ? const Color(0xFF0F55C7)
-                          : Colors.grey.shade400,
-                    ),
-                    Text(
-                      'Laporan',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: _currentIndex == 2
+                // Laporan
+                GestureDetector(
+                  onTap: () => _onBottomNavTap(2),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.assignment_outlined,
+                        color: controller.currentIndex.value == 2
                             ? const Color(0xFF0F55C7)
                             : Colors.grey.shade400,
                       ),
-                    ),
-                  ],
+                      Text(
+                        'Laporan',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: controller.currentIndex.value == 2
+                              ? const Color(0xFF0F55C7)
+                              : Colors.grey.shade400,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:laporin_app/controllers/login_controller.dart';
 import 'package:laporin_app/views/penindak_homepage_screen.dart';
+import 'package:laporin_app/views/profile_google_screen.dart';
 import 'package:laporin_app/views/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -203,11 +204,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                         loginController.resetForm();
 
                                         if (mounted) {
+                                          // Navigate based on role
+                                          Widget destination =
+                                              loginController.userRoles.value ==
+                                                  1
+                                              ? const PenindakHomepageScreen()
+                                              : ProfileGoogleScreen();
                                           Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (_) =>
-                                                  const PenindakHomepageScreen(),
+                                              builder: (_) => destination,
                                             ),
                                             (route) => false,
                                           );
@@ -270,11 +276,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                 .continueWithGoogle(context);
                             if (result == true) {
                               if (mounted) {
+                                // Navigate based on role
+                                Widget destination =
+                                    loginController.userRoles.value == 1
+                                    ? const PenindakHomepageScreen()
+                                    : ProfileGoogleScreen();
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) =>
-                                        const PenindakHomepageScreen(),
+                                    builder: (_) => destination,
                                   ),
                                   (route) => false,
                                 );

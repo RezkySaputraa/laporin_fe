@@ -21,6 +21,7 @@ class LoginController extends GetxController {
 
   RxBool obscureText = true.obs;
   RxBool isLoading = false.obs;
+  RxInt userRoles = 0.obs; // 1 = penindak, 2 = masyarakat
 
   @override
   void onClose() {
@@ -73,7 +74,9 @@ class LoginController extends GetxController {
             id: userData['id'],
             username: userData['username'],
             login: "google",
+            roles: userData['roles'] ?? 0,
           );
+          userRoles.value = userData['roles'] ?? 0;
 
           return true;
         } else {
@@ -99,7 +102,9 @@ class LoginController extends GetxController {
         id: result['id'],
         username: result['username'],
         login: "password",
+        roles: result['roles'] ?? 0,
       );
+      userRoles.value = result['roles'] ?? 0;
 
       return true;
     } catch (e) {

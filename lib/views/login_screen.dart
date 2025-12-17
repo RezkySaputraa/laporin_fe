@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:laporin_app/controllers/login_controller.dart';
-import 'package:laporin_app/views/profile_google_screen.dart';
+import 'package:laporin_app/views/penindak_homepage_screen.dart';
 import 'package:laporin_app/views/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -36,9 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _navigateToRegister() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => const RegisterScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const RegisterScreen()),
     );
   }
 
@@ -193,9 +191,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       FocusScope.of(context).unfocus();
 
                                       final isFormValid =
-                                          _formKey.currentState
-                                                  ?.validate() ??
-                                              false;
+                                          _formKey.currentState?.validate() ??
+                                          false;
 
                                       if (!isFormValid) return;
 
@@ -210,7 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (_) =>
-                                                  ProfileGoogleScreen(),
+                                                  const PenindakHomepageScreen(),
                                             ),
                                             (route) => false,
                                           );
@@ -276,7 +273,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => ProfileGoogleScreen(),
+                                    builder: (_) =>
+                                        const PenindakHomepageScreen(),
                                   ),
                                   (route) => false,
                                 );

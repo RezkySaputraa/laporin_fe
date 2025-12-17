@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:laporin_app/views/user_homepage_screen.dart';
 import '/controllers/laporin_controller.dart';
 import '/models/laporin_jenis_model.dart';
-import '/views/login_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LaporinScreen extends StatelessWidget {
@@ -581,7 +581,7 @@ class LaporinScreen extends StatelessWidget {
 
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (_) => LoginScreen()),
+                      MaterialPageRoute(builder: (_) => UserHomepageScreen()),
                     );
                   },
                   child: Text(

@@ -30,7 +30,7 @@ class LaporinService {
       options: Options(headers: {"Content-Type": "multipart/form-data"}),
     );
 
-    return response.data; // ✅ langsung JSON
+    return response.data;
   }
 
   Future<Map<String, dynamic>> deleteImageFromServer(String publicId) async {

@@ -15,7 +15,7 @@ class UserProfileScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          "Profile User",
+          "Profile",
           style: GoogleFonts.inter(
             color: Color(0xFF0F55C7),
             fontWeight: FontWeight.w600,

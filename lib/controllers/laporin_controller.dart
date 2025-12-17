@@ -54,7 +54,7 @@ class LaporinController extends GetxController {
     super.onClose();
   }
 
-  Future<void> pickImage(BuildContext context) async {
+  Future<void> pickImage(context) async {
     showModalBottomSheet(
       context: context,
       builder: (_) {

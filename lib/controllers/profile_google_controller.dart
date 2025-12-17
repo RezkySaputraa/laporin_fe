@@ -9,7 +9,6 @@ class ProfileGoogleController extends GetxController {
 
   RxBool isFetchingUser = false.obs;
   RxInt idUser = 0.obs;
-  RxString loginProfile = "".obs;
 
   RxString username = "".obs;
   RxString email = "".obs;
@@ -35,11 +34,6 @@ class ProfileGoogleController extends GetxController {
   void loadUser() async {
     final id = await authPrefs.getUserId();
     idUser.value = id!.toInt();
-
-    // ini kode sementara untuk menunjukkan perbedaan login dengan google dan ga google
-    final loginWith = await authPrefs.getLogin();
-    loginProfile.value = loginWith!;
-    // nanti apabila ada perubahan bisa dihapus
 
     await getUserProfile();
   }

@@ -33,6 +33,21 @@ class LaporinService {
     return response.data;
   }
 
+  // Future<Map<String, dynamic>> uploadImageToServer(
+  //   XFile image, {
+  //   required String fileName,
+  // }) async {
+  //   final bytes = await image.readAsBytes();
+
+  //   final formData = FormData.fromMap({
+  //     'file': MultipartFile.fromBytes(bytes, filename: fileName),
+  //   });
+
+  //   final response = await dio.post("$baseUrl/media/upload", data: formData);
+
+  //   return response.data;
+  // }
+
   Future<Map<String, dynamic>> deleteImageFromServer(String publicId) async {
     final response = await dio.delete(
       "$baseUrl/media/delete",

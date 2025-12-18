@@ -26,6 +26,7 @@ class PenindakDetailController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isSubmitting = false.obs;
   RxBool isUploading = false.obs;
+  RxBool isDeleting = false.obs; // Separate loading for image deletion
   RxString errorMessage = ''.obs;
   RxString successMessage = ''.obs;
 
@@ -131,13 +132,14 @@ class PenindakDetailController extends GetxController {
     // Only delete from cloudinary if it was a new upload (not from DB)
     if (isNewUpload.value && uploadedPublicId.value.isNotEmpty) {
       try {
-        isLoading.value = true;
+        isDeleting.value = true;
         await _service.deleteImageFromServer(uploadedPublicId.value);
       } catch (e) {
+        isDeleting.value = false;
         errorMessage.value = 'Gagal menghapus gambar dari server';
         return false;
       } finally {
-        isLoading.value = false;
+        isDeleting.value = false;
       }
     }
 

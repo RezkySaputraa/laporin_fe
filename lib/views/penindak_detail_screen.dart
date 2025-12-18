@@ -429,6 +429,29 @@ class _PenindakDetailScreenState extends State<PenindakDetailScreen> {
         );
       }
 
+      // If image is being deleted
+      if (controller.isDeleting.value) {
+        return Container(
+          width: double.infinity,
+          height: 150,
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(color: Colors.red),
+                SizedBox(height: 8),
+                Text('Menghapus gambar...'),
+              ],
+            ),
+          ),
+        );
+      }
+
       // If image is selected (new local image)
       if (controller.selectedImage.value != null) {
         return Stack(

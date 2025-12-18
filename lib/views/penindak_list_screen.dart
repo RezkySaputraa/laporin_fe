@@ -371,30 +371,29 @@ class _PenindakListScreenState extends State<PenindakListScreen> {
                 onTap: () => Navigator.pop(context),
               ),
 
-              // Camera (center button - decorative)
               Container(
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF0F55C7), Color(0xFF3B7DE8)],
-                  ),
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF0F55C7).withValues(alpha: 0.4),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFF0F55C7), Color(0xFF3B7DE8)],
                     ),
-                  ],
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF0F55C7).withValues(alpha: 0.4),
+                        blurRadius: 15,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.shield_moon,
+                    color: Colors.white,
+                    size: 26,
+                  ),
                 ),
-                child: const Icon(
-                  Icons.camera_alt_rounded,
-                  color: Colors.white,
-                  size: 26,
-                ),
-              ),
 
               // Laporan (active)
               _buildNavItem(

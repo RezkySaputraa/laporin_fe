@@ -18,6 +18,9 @@ class PenindakDetailController extends GetxController {
   // Image
   Rx<XFile?> selectedImage = Rx<XFile?>(null);
   RxString uploadedImageUrl = ''.obs;
+  RxString uploadedPublicId = ''.obs; // Store public_id for deletion
+  RxBool isNewUpload =
+      false.obs; // Track if image was newly uploaded (not from DB)
 
   // State
   RxBool isLoading = false.obs;
@@ -56,6 +59,7 @@ class PenindakDetailController extends GetxController {
       // Pre-fill image URL if exists (from tindak.hasil)
       if (result?.tindak?.hasil != null && result!.tindak!.hasil!.isNotEmpty) {
         uploadedImageUrl.value = result.tindak!.hasil!;
+        isNewUpload.value = false; // This is from DB, not new upload
       }
     } catch (e) {
       errorMessage.value = e.toString().replaceAll('Exception: ', '');
@@ -110,8 +114,10 @@ class PenindakDetailController extends GetxController {
       isUploading.value = true;
       errorMessage.value = '';
 
-      final url = await _service.uploadImage(selectedImage.value!);
-      uploadedImageUrl.value = url;
+      final result = await _service.uploadImage(selectedImage.value!);
+      uploadedImageUrl.value = result['url'] ?? '';
+      uploadedPublicId.value = result['public_id'] ?? '';
+      isNewUpload.value = true; // Mark as newly uploaded
     } catch (e) {
       errorMessage.value = 'Gagal upload gambar';
       selectedImage.value = null;
@@ -120,10 +126,26 @@ class PenindakDetailController extends GetxController {
     }
   }
 
-  /// Remove selected image
-  void removeImage() {
+  /// Remove selected image and delete from cloudinary if it was newly uploaded
+  Future<bool> removeImage() async {
+    // Only delete from cloudinary if it was a new upload (not from DB)
+    if (isNewUpload.value && uploadedPublicId.value.isNotEmpty) {
+      try {
+        isLoading.value = true;
+        await _service.deleteImageFromServer(uploadedPublicId.value);
+      } catch (e) {
+        errorMessage.value = 'Gagal menghapus gambar dari server';
+        return false;
+      } finally {
+        isLoading.value = false;
+      }
+    }
+
     selectedImage.value = null;
     uploadedImageUrl.value = '';
+    uploadedPublicId.value = '';
+    isNewUpload.value = false;
+    return true;
   }
 
   /// Submit tindak lanjut
@@ -187,6 +209,8 @@ class PenindakDetailController extends GetxController {
     catatanController.clear();
     selectedImage.value = null;
     uploadedImageUrl.value = '';
+    uploadedPublicId.value = '';
+    isNewUpload.value = false;
     errorMessage.value = '';
     successMessage.value = '';
   }

@@ -443,9 +443,9 @@ class _PenindakDetailScreenState extends State<PenindakDetailScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircularProgressIndicator(color: Colors.red),
+                CircularProgressIndicator(color: Color(0xFF0F55C7)),
                 SizedBox(height: 8),
-                Text('Menghapus gambar...'),
+                Text('Menghapus gambar'),
               ],
             ),
           ),
@@ -471,31 +471,37 @@ class _PenindakDetailScreenState extends State<PenindakDetailScreen> {
                 ),
               ),
             ),
-            Positioned(
-              top: 8,
-              right: 8,
-              child: GestureDetector(
-                onTap: () async {
-                  final success = await controller.removeImage();
-                  if (!success && mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(controller.errorMessage.value),
-                        backgroundColor: Colors.red,
+            controller.laporan.value?.status == 2
+                ? const SizedBox()
+                : Positioned(
+                    top: 8,
+                    right: 8,
+                    child: GestureDetector(
+                      onTap: () async {
+                        final success = await controller.removeImage();
+                        if (!success && mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(controller.errorMessage.value),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 16,
+                        ),
                       ),
-                    );
-                  }
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
+                    ),
                   ),
-                  child: const Icon(Icons.close, color: Colors.white, size: 16),
-                ),
-              ),
-            ),
             if (controller.uploadedImageUrl.value.isNotEmpty)
               Positioned(
                 bottom: 8,

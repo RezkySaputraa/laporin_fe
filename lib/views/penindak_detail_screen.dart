@@ -452,7 +452,17 @@ class _PenindakDetailScreenState extends State<PenindakDetailScreen> {
               top: 8,
               right: 8,
               child: GestureDetector(
-                onTap: controller.removeImage,
+                onTap: () async {
+                  final success = await controller.removeImage();
+                  if (!success && mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(controller.errorMessage.value),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                },
                 child: Container(
                   padding: const EdgeInsets.all(4),
                   decoration: const BoxDecoration(

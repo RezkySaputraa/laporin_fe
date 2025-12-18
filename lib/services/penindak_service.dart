@@ -93,7 +93,8 @@ class PenindakService {
   }
 
   /// Upload image to Cloudinary
-  Future<String> uploadImage(XFile image) async {
+  /// Returns Map with 'url' and 'public_id'
+  Future<Map<String, dynamic>> uploadImage(XFile image) async {
     try {
       final formData = FormData.fromMap({
         'file': await MultipartFile.fromFile(image.path, filename: image.name),
@@ -105,7 +106,10 @@ class PenindakService {
         options: Options(headers: {"Content-Type": "multipart/form-data"}),
       );
 
-      return response.data['url'] ?? '';
+      return {
+        'url': response.data['url'] ?? '',
+        'public_id': response.data['public_id'] ?? '',
+      };
     } on DioException catch (e) {
       throw Exception(_handleError(e));
     }
